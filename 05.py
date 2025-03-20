@@ -2,7 +2,7 @@ import decrypter
 import itertools
 
 
-def chunk_shuffle(cipher: str, chunk_size: int | None, sequence: list[int]):
+def chunk_shuffle(cipher: str, sequence: list[int], chunk_size: int | None = None):
     if chunk_size is None:
         chunk_size = max(sequence)
     result = []
@@ -19,4 +19,4 @@ def chunk_shuffle(cipher: str, chunk_size: int | None, sequence: list[int]):
 
 @decrypter.decrypter(chapter=5)
 def decrypt(cipher: str) -> str:
-    return chunk_shuffle(cipher, 9, [7, 6, 8, 3, 2, 1, 9, 5, 4])
+    return chunk_shuffle(cipher, [7, 6, 8, 3, 2, 1, 9, 5, 4], 9)
