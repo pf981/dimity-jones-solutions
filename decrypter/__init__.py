@@ -25,17 +25,17 @@ class Decrypter:
         cipher = self._read_file(f"{self.prev_chapter:02}.ex{example}")
         return self._decrypt(cipher)
 
-    def write_chapter(self) -> None:
+    def write_chapter(self) -> Path:
         output = self.decrypt_chapter()
-        self._write_file(f"{self.chapter:02}.txt", output)
+        return self._write_file(f"{self.chapter:02}.txt", output)
 
-    def write_one_chapter(self) -> None:
+    def write_one_chapter(self) -> Path:
         output = self.decrypt_one_chapter()
-        self._write_file(f"{self.chapter:02}.one", output)
+        return self._write_file(f"{self.chapter:02}.one", output)
 
-    def write_example(self, example: int) -> None:
+    def write_example(self, example: int) -> Path:
         output = self.decrypt_example(example)
-        self._write_file(f"{self.chapter:02}.ex{example}", output)
+        return self._write_file(f"{self.chapter:02}.ex{example}", output)
 
     def _decrypt(self, cipher: str) -> str:
         return self.func(cipher)
@@ -50,13 +50,14 @@ class Decrypter:
             raise e
         return cipher
 
-    def _write_file(self, file: str, output: str) -> None:
+    def _write_file(self, file: str, output: str) -> Path:
         path = self.path / file
         try:
             with open(path, "w") as f:
                 f.write(output)
         except FileNotFoundError as e:
             raise e
+        return path
 
 
 def decrypter(
