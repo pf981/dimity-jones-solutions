@@ -17,6 +17,6 @@ def chunk_shuffle(cipher: str, chunk_size: int | None, sequence: list[int]):
     return "".join(result)
 
 
-@decrypter.decrypter(chapter=4)
+@decrypter.decrypter(chapter=5)
 def decrypt(cipher: str) -> str:
-    return chunk_shuffle(cipher, 8, [3, 2, 1, 7, 6, 5])
+    return chunk_shuffle(cipher, 9, [7, 6, 8, 3, 2, 1, 9, 5, 4])
