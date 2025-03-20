@@ -8,8 +8,9 @@ This repository provides solutions to each chapter and decrypts the file.
 
 ## Usage
 
-1. Download the [Dimity Jones text file](https://obnakwa.itch.io/dimityjones) and save it as `data/00.txt`
-2. Run in sequence `01.py`, `02.py`, ..., `89.py`
-3. Decrypted steps will be in `data/01.txt`, ..., `data/89.tx`
-4. Check that the output matches the expected hash using `check.py`
-5. Combing the outputs using `combine.py`
+1. Clone the repo `git clone https://github.com/pf981/dimity-jones-solutions.git`
+2. Download the [Dimity Jones text file](https://obnakwa.itch.io/dimityjones) and save it as `data/00.txt`
+3. Install requirements `pip install -r requirements.txt`
+4. Run with `pytest`
+
+`pytest` will generate the decrypted chapters in `01.chp`, `02.chp` etc. It will check that the decrypted files match the expected hash.
