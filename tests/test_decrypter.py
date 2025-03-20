@@ -97,7 +97,7 @@ hashes = [
 ]
 
 
-@pytest.mark.parametrize("chapter, expected_hash", enumerate(hashes[:2]))
+@pytest.mark.parametrize("chapter, expected_hash", enumerate(hashes))
 def test_hash(chapter, expected_hash):
     try:
         module = importlib.import_module(f"{chapter:02d}")
