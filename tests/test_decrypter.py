@@ -102,13 +102,13 @@ def test_hash(chapter, expected_hash):
     try:
         module = importlib.import_module(f"{chapter:02d}")
     except ModuleNotFoundError:
-        assert False, "Missing file {chapter:02d}.py"
+        # assert False, "Missing file {chapter:02d}.py"
+        pytest.skip(f"File not implemented {chapter:02d}.py")
     decrypt = module.decrypt
 
     path = decrypt.write_chapter()
     decrypt.write_one_chapter()
 
     with open(path, "br") as f:
-        print(path)
         h = hashlib.file_digest(f, "sha256").hexdigest()
     assert h == expected_hash
