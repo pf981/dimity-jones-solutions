@@ -1,11 +1,14 @@
-with open('./data/00.txt') as f:
-    text = f.read()
+import decrypter
 
-text = text.split("#####", 1)[1]
-output = []
-for i in range(len(text) // 2):
-    output.append(text[i] + text[-i - 1])
-output.append(text[len(text) // 2])
 
-with open('./data/01.txt', 'w') as f:
-    f.write(''.join(output))
+@decrypter.decrypter(chapter=1)
+def decrypt(cipher: str) -> str:
+    output = []
+
+    for i in range(len(cipher) // 2):
+        output.append(cipher[i] + cipher[-i - 1])
+
+    if len(cipher) % 2:
+        output.append(cipher[len(cipher) // 2])
+
+    return "".join(output)
