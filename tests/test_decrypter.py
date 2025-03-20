@@ -100,7 +100,7 @@ hashes = [
 @pytest.mark.parametrize("chapter, expected_hash", enumerate(hashes))
 def test_hash(chapter, expected_hash):
     try:
-        module = importlib.import_module(f"{chapter:02d}")
+        module = importlib.import_module(f"solutions.{chapter:02d}")
     except ModuleNotFoundError:
         # assert False, "Missing file {chapter:02d}.py"
         pytest.skip(f"File not implemented {chapter:02d}.py")
