@@ -5,8 +5,8 @@ import itertools
 def chunk_shuffle(cipher: str, sequence: list[int], chunk_size: int | None = None):
     if chunk_size is None:
         chunk_size = max(sequence)
-    result = []
 
+    result = []
     for buffer in itertools.batched(cipher, chunk_size):
         if len(buffer) < chunk_size:
             result.extend(buffer)
