@@ -31,7 +31,7 @@ class Decrypter:
 
     def write_one_chapter(self) -> Path:
         output = self.decrypt_one_chapter()
-        return self._write_file(f"{self.chapter:02}.one", output)
+        return self._write_file(f"{self.chapter:02}.chp", output)
 
     def write_example(self, example: int) -> Path:
         output = self.decrypt_example(example)
