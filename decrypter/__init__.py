@@ -25,6 +25,18 @@ class Decrypter:
         cipher = self._read_file(f"{self.prev_chapter:02}.ex{example}")
         return self._decrypt(cipher)
 
+    def write_chapter(self) -> None:
+        output = self.decrypt_chapter()
+        self._write_file(f"{self.chapter:02}.txt", output)
+
+    def write_one_chapter(self) -> None:
+        output = self.decrypt_one_chapter()
+        self._write_file(f"{self.chapter:02}.one", output)
+
+    def write_example(self, example: int) -> None:
+        output = self.decrypt_example(example)
+        self._write_file(f"{self.chapter:02}.ex{example}", output)
+
     def _decrypt(self, cipher: str) -> str:
         return self.func(cipher)
 
@@ -37,6 +49,14 @@ class Decrypter:
             # print(f"File not found: {path}")
             raise e
         return cipher
+
+    def _write_file(self, file: str, output: str) -> None:
+        path = self.path / file
+        try:
+            with open(path, "w") as f:
+                f.write(output)
+        except FileNotFoundError as e:
+            raise e
 
 
 def decrypter(
