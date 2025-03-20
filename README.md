@@ -13,4 +13,4 @@ This repository provides solutions to each chapter and decrypts the file.
 3. Install requirements `pip install -r requirements.txt`
 4. Run with `pytest`
 
-`pytest` will generate the decrypted chapters in `01.chp`, `02.chp` etc. It will check that the decrypted files match the expected hash.
+`pytest` will generate the decrypted chapters in `data/01.chp`, `data/02.chp` etc. It will check that the decrypted files match the expected hash.
