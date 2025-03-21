@@ -53,7 +53,9 @@ class Decrypter:
     def _write_file(self, file: str, output: str) -> Path:
         path = self.path / file
         try:
-            with open(path, "w") as f:
+            # newline="" required to prevent windows changing
+            # line endings and the hashes not matching
+            with open(path, "w", newline="") as f:
                 f.write(output)
         except FileNotFoundError as e:
             raise e
