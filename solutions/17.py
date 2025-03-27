@@ -1,36 +1,23 @@
 import decrypter
-# import itertools
+
 
 # dials = [
-#     ["u", "y", "u", "d", "e"],  #           Y D U Y not "y" U   D
-#     ["g", "k", "p", "a", "i"],  #           A I P A         P   I
-#     ["g", "h", "j", "h", "e"],  #           H E E           H   E
-#     ["w", "i", "d", "j", "l"],  #           D L D               D
+#     ["u", "y", "u", "d", "e"],  #           D
+#     ["g", "k", "p", "a", "i"],  #           I
+#     ["g", "h", "j", "h", "e"],  #           E
+#     ["w", "i", "d", "j", "l"],  #           D
 
-#     ["r", "e", "x", "s", "j", "m", "u"],  # U E E       U M S   S
-#     ["b", "k", "i", "n", "a", "j", "h"],  # N N N   B R N A N   H
-#     ["a", "b", "g", "k", "y", "f", "w"],  # K B B   A I B   A   A
-#     ["r", "j", "a", "c", "l", "m", "k"],  # A A A M R L A   R   L
-#     ["r", "i", "o", "b", "x", "n", "l"],  # L L R N B L R   L   L
+#     ["r", "e", "x", "s", "j", "m", "u"],  # S
+#     ["b", "k", "i", "n", "a", "j", "h"],  # H
+#     ["a", "b", "g", "k", "y", "f", "w"],  # A
+#     ["r", "j", "a", "c", "l", "m", "k"],  # L
+#     ["r", "i", "o", "b", "x", "n", "l"],  # L
 # ]
-
-# sorted(c for line in dials for c in line)
-# [sorted([ord(c) - ord("a") for c in line]) for line in dials]
-
-# sequences = set()
-# for key in itertools.product(*dials):
-#     sequence = tuple(decrypter._get_alphabetical_transposition_key(key))
-# len(sequences)
-
-# decrypter._get_alphabetical_transposition_key("DIED SNARL")
-# decrypter._get_alphabetical_transposition_key("DIED SHALL")
 
 
 @decrypter.decrypter(chapter=17)
 def decrypt(cipher: str) -> str:
-    # return decrypter.string_shuffle(cipher, "DIED SNARL")
     return decrypter.string_shuffle(cipher, "DIED SHALL")
-    # return decrypter.sequence_shuffle(cipher, [2, 6, 4, 3, 9, 5, 1, 7, 8])
 
 
 # T?ren?dy
