@@ -1,3 +1,4 @@
+import itertools
 from typing import Callable
 from pathlib import Path
 
@@ -69,3 +70,36 @@ def decrypter(
         return Decrypter(func, chapter, path)
 
     return decorator
+
+
+def sequence_shuffle(cipher: str, sequence: list[int], chunk_size: int | None = None):
+    if chunk_size is None:
+        chunk_size = max(sequence)
+
+    result = []
+    for buffer in itertools.batched(cipher, chunk_size):
+        if len(buffer) < chunk_size:
+            result.extend(buffer)
+            break
+        for i in sequence:
+            result.append(buffer[i - 1])
+
+    return "".join(result)
+
+
+def string_shuffle(cipher: str, key_string: str):
+    return sequence_shuffle(
+        cipher,
+        _get_alphabetical_transposition_key(key_string)
+    )
+
+
+def _get_alphabetical_transposition_key(s: str):
+    chars = [c.upper() for c in s if c.isalpha()]
+    ranks = sorted(enumerate(chars), key=lambda pair: pair[1])
+
+    key = [0] * len(chars)
+    for i, (j, _) in enumerate(ranks, 1):
+        key[j] = i
+
+    return key
