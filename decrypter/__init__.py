@@ -88,14 +88,11 @@ def sequence_shuffle(cipher: str, sequence: list[int], chunk_size: int | None = 
 
 
 def string_shuffle(cipher: str, key_string: str):
-    return sequence_shuffle(
-        cipher,
-        _get_alphabetical_transposition_key(key_string)
-    )
+    return sequence_shuffle(cipher, _get_alphabetical_transposition_key(key_string))
 
 
 def _get_alphabetical_transposition_key(s: str):
-    chars = [c.upper() for c in s if c.isalpha()]
+    chars = [c.upper() for c in s if c.isalpha() or c.isdigit()]
     ranks = sorted(enumerate(chars), key=lambda pair: pair[1])
 
     key = [0] * len(chars)
