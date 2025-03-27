@@ -23,7 +23,6 @@ for move in "RCw CCw RBc LTw RTw CCw LBw CBc CBc CTc LCc CCc CCc RTw".split():
     c = "LCR".index(c) * 2 + 1
     r = "TCB".index(r) * 2 + 1
     f = rot_right if direction == "c" else rot_left
-    print(f"{r=} {c=} {direction=}")
     f(grid, r, c)
 
 
