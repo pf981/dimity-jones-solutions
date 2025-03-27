@@ -1,66 +1,66 @@
 import decrypter
 import itertools
 
-line = """z5C:.N}pC'w:rGNv;oAKos/":,+5rLmE"9v"""
 
-len(line)
-# So maybe 35 is the width
+def chunk_shuffle(cipher: str, sequence: list[int], chunk_size: int | None = None):
+    if chunk_size is None:
+        chunk_size = max(sequence)
+
+    result = []
+    for buffer in itertools.batched(cipher, chunk_size):
+        if len(buffer) < chunk_size:
+            result.extend(buffer)
+            break
+        for i in sequence:
+            result.append(buffer[i - 1])
+
+    return "".join(result)
+
+
+def get_alphabetical_transposition_key(s: str):
+    chars = [c.upper() for c in s if c.isalpha()]
+    ranks = sorted(enumerate(chars), key=lambda pair: pair[1])
+
+    key = [0] * len(chars)
+    for i, (j, _) in enumerate(ranks, 1):
+        key[j] = i
+
+    return key
+
+
+text = """
+H.:
+
+(I mean nothing puritanical by resorting thus to your initial, my
+sweet woodchuck; I am only practicing nonchalance!)
+
+It has been eleven years since that lucky, magical day that I and you
+first met. I'll never forget how you primed my unpurring pump with
+your zany jokes and soft, smiling eyes. Zowie!
+
+And I remember your first letter's charming evasiveness and truly
+touching reluctance to come right out and announce your smittenness!
+(Now, of course, I know that you'd fallen in love with me, too. How
+utterly exhilarating to think it, to be able to say it truthfully!)
+
+And ever since, nothing's been able to dampen my happiness for long.
+
+I eagerly await the next letter from you. Whether you write a lot or
+a little is not of prime importance. Just write!
+
+Love, S.
+"""
+
+primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541}
+
+words = text.split()
+key = ''.join(next(c for c in word if c.isalpha()) for i, word in enumerate(words, 1) if i in primes)
+# ImprisonedInpuzZlecastlesendhelp
 
 
 @decrypter.decrypter(chapter=13)
 def decrypt(cipher: str) -> str:
-    return cipher
-
-
-import collections
-# import nltk
-
-# # nltk.download('words')
-# all_words = nltk.corpus.words
-# for word in {word.lower() for word in all_words.words()}
-with open("./data/words.dat") as f:
-    all_words = f.read().splitlines()
-# all_words.extend(["dimity", "leland"])
-
-for i in range(13):
-    with open(f"./data/{i:02}.chp") as f:
-        chapter_text = f.read()
-    chapter_words = {
-        "".join(c.lower() for c in word if c.isalpha()) for word in chapter_text.split()
-    }
-    all_words.extend(chapter_words)
-
-
-counters = [
-    (word, collections.Counter(word)) for word in {word.lower() for word in all_words}
-]
-
-cipher = decrypt.decrypt_chapter()
-text = cipher[: 35 * 100].replace("\n", "#")
-
-for line in itertools.batched(text, 35):
-    line = "".join(line)
-    counts = collections.Counter(line.lower())
-    words = [word for word, counter in counters if counter <= counts]
-    # print(line, words[:50])
-    print(line)
-    print(sorted(set(words)))
-    print()
-
-# import random
-
-
-# def shuffle(seed=None):
-#     if seed is not None:
-#         random.seed(seed)
-#     order = list(range(35))
-#     print("\n\n")
-#     print(order)
-#     print()
-#     random.shuffle(order)
-#     for part in itertools.batched(text, 35):
-#         # print("".join(part[i] for i in order))
-#         print(";".join(part[i].replace('"', "*") for i in order))
-
-
-# shuffle()
+    return chunk_shuffle(
+        cipher,
+        get_alphabetical_transposition_key(key)
+    )
