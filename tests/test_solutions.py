@@ -105,6 +105,8 @@ def test_solutions(chapter, expected_hash):
         pytest.skip(f"Solution not implemented {chapter:02d}.py")
     decrypt = module.decrypt
 
+    assert decrypt.chapter == chapter
+
     path = decrypt.write_chapter()
     decrypt.write_one_chapter()
 
