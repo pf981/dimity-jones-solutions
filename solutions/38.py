@@ -191,6 +191,27 @@ def decrypt(cipher: str) -> str:
 #     return f
 
 
+# soln = hill_climbing(
+#     init_func=init_func_gen(12, 12),
+#     fitness_func=fitness_func,
+#     rand_neighbor_func=rand_neighbor_func_gen(
+#         percent_change_len=0.00,
+#         max_len_change=0,
+#         min_len=5,
+#         max_len=15,
+#         max_swaps=1,
+#     ),
+#     iterations=10000,
+#     repeats=1,
+# )
+
+# print(decrypter.sequence_shuffle(text, soln))
+# print(decrypter.sequence_shuffle(text, [6, 4, 10, 7, 1, 12, 5, 9, 2, 3, 11, 8]))
+# # ...                                    (12, 3, 6, 5, 4, 10, 8, 11, 1, 7, 2, 9)
+
+# fitness_func(soln)
+# fitness_func([6, 4, 10, 7, 1, 12, 5, 9, 2, 3, 11, 8])
+
 # # initf = init_func_gen_fixed(5, 15, {0: 6, 1: 4})
 # # initf()
 # fixed_elements = {0: 6, 1: 4}
