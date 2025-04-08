@@ -1,6 +1,7 @@
 import itertools
 from typing import Callable
 from pathlib import Path
+import string
 
 
 class Decrypter:
@@ -100,3 +101,14 @@ def _get_alphabetical_transposition_key(s: str):
         key[j] = i
 
     return key
+
+
+def substitution_cipher(cipher: str, key_string: str):
+    keys = list({c.lower(): None for c in key_string if c.isalpha()})
+    keys += [c for c in string.ascii_lowercase if c not in keys]
+    m = {}
+    for a, b in zip(keys, string.ascii_lowercase):
+        m[a] = b
+        m[a.upper()] = b.upper()
+
+    return "".join(m.get(c, c) for c in cipher)
