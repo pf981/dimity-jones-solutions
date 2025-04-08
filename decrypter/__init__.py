@@ -103,11 +103,16 @@ def _get_alphabetical_transposition_key(s: str):
     return key
 
 
-def substitution_cipher(cipher: str, key_string: str):
-    keys = list({c.lower(): None for c in key_string if c.isalpha()})
-    keys += [c for c in string.ascii_lowercase if c not in keys]
+def substitution_cipher(
+    cipher: str,
+    key_string: str,
+    alphabet: str = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n""",
+):
+    keys = list(dict.from_keys(key_string))
+    keys += [c for c in alphabet if c not in keys]
+    assert len(keys) == len(alphabet)
     m = {}
-    for a, b in zip(keys, string.ascii_lowercase):
+    for a, b in zip(keys, alphabet):
         m[a] = b
         m[a.upper()] = b.upper()
 
