@@ -80,8 +80,4 @@ for line in text.splitlines()[4:]:
 
 @decrypter.decrypter(chapter=40)
 def decrypt(cipher: str) -> str:
-    m = {}
-    for a, b in pairs:
-        m[a] = b
-        m[a.upper()] = b.upper()
     return "".join(m.get(c, c) for c in cipher)
