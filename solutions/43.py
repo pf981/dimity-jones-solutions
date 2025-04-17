@@ -17,13 +17,11 @@ text = """2	roast turkey
 15	lemon chiffon cake
 16	pumpernickel bread"""
 
-key_string = (
-    ", ".join(
-        f"{line.split()[0]}: {line.split()[1][0].upper()}{line.split(maxsplit=1)[1][1:]}"
-        for line in text.splitlines()
-    )
-    + "."
-)
+parts = []
+for line in text.splitlines():
+    seat_num, name = line.split(maxsplit=1)
+    parts.append(f"{seat_num}: {name.capitalize()}")
+key_string = ", ".join(parts) + "."
 
 
 @decrypter.decrypter(chapter=43)
