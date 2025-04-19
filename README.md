@@ -6,7 +6,8 @@ The game provides a single text file where only the first chapter is readable. E
 
 ## 📁 Project Structure
 
-- `data/`: Contains the original encrypted text file (`00.txt`) and the decrypted chapters (`01.chp`, `02.chp`, etc.)
+- `data/`: Contains the original encrypted text file (`00.txt`) and the decrypted chapters (`01.chp`, `02.chp`, etc.).
+  - **Note:** The repository does not include `00.txt`. You must download it from [the game's page](https://obnakwa.itch.io/dimityjones) and save it as `data/00.txt`.
 - `solutions/`: Python scripts that implement decryption algorithms for each chapter.
 - `tests/`: Pytest-based tests that check the correctness of decrypted chapters.
 - `requirements.txt`: Lists Python dependencies required to run the project.
