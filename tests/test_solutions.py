@@ -1,6 +1,17 @@
 import hashlib
 import importlib
+import os
 import pytest
+
+
+def test_data_file_exists():
+    filepath = "data/00.txt"
+    assert os.path.isfile(filepath), (
+        "Missing data file: data/00.txt\n"
+        "Please download the Dimity Jones text file from:\n"
+        "https://obnakwa.itch.io/dimityjones\n"
+        "and save it as 'data/00.txt'."
+    )
 
 
 hashes = [
