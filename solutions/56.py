@@ -2,6 +2,14 @@ import decrypter
 import itertools
 
 
+def get_path(s):
+    return [(ord(s[i]) - ord(s[i - 1])) % 26 for i in range(1, len(s))]
+
+
+target_path = [ord(c) - ord("a") + 1 for c in "cumin"]
+assert get_path("knives") == target_path
+
+
 def sub89(s1: str, s2: str) -> str:
     if len(s2) > len(s1):
         s1, s2 = s2, s1
@@ -23,7 +31,7 @@ def sub89(s1: str, s2: str) -> str:
 
 @decrypter.decrypter(chapter=56)
 def decrypt(cipher: str) -> str:
-    return sub89(cipher, "knivessink")  # WIP: This is just a placeholder
+    return sub89(cipher, "knivessink")
 
 
 # import collections
