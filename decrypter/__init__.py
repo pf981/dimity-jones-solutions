@@ -113,3 +113,23 @@ def substitution_cipher(cipher: str, key_string: str):
         m[a] = b
 
     return "".join(m.get(c, c) for c in cipher)
+
+
+def vigenere_cipher(cipher: str, key_string: str) -> str:
+    s1, s2 = cipher, key_string
+    if len(s2) > len(s1):
+        s1, s2 = s2, s1
+
+    if not s2:
+        return s1
+
+    alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+    c_to_index = {c: i for i, c in enumerate(alphabet)}
+    nums1, nums2 = [[c_to_index[c] for c in s] for s in [s1, s2]]
+
+    n = len(alphabet)
+    result = []
+    for a, b in zip(nums1, itertools.cycle(nums2)):
+        result.append(alphabet[(a - b) % n])
+
+    return "".join(result)

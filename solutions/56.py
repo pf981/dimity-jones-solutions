@@ -10,28 +10,9 @@ target_path = [ord(c) - ord("a") + 1 for c in "cumin"]
 assert get_path("knives") == target_path
 
 
-def sub89(s1: str, s2: str) -> str:
-    if len(s2) > len(s1):
-        s1, s2 = s2, s1
-
-    if not s2:
-        return s1
-
-    alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
-    c_to_index = {c: i for i, c in enumerate(alphabet)}
-    nums1, nums2 = [[c_to_index[c] for c in s] for s in [s1, s2]]
-
-    n = len(alphabet)
-    result = []
-    for a, b in zip(nums1, itertools.cycle(nums2)):
-        result.append(alphabet[(a - b) % n])
-
-    return "".join(result)
-
-
 @decrypter.decrypter(chapter=56)
 def decrypt(cipher: str) -> str:
-    return sub89(cipher, "knivessink")
+    return decrypter.vigenere_cipher(cipher, "knivessink")
 
 
 # import collections
@@ -65,7 +46,7 @@ def decrypt(cipher: str) -> str:
 
 
 # def encrypt89(plaintext: str, key: str) -> str:
-#     """Encrypt using the reverse of sub89"""
+#     """Encrypt using the reverse of decrypter.vigenere_cipher"""
 #     if not key:
 #         return plaintext
 
@@ -129,7 +110,7 @@ def decrypt(cipher: str) -> str:
 
 #     for key_char in lowercase_letters:
 #         # Decrypt using this key character
-#         decrypted = sub89(ciphertext, key_char)
+#         decrypted = decrypter.vigenere_cipher(ciphertext, key_char)
 
 #         if len(decrypted) >= 3:
 #             trigrams = get_normalised_three_grams(decrypted)
@@ -178,7 +159,7 @@ def decrypt(cipher: str) -> str:
 #     key_str = "".join(key)
 
 #     # Decrypt the full text
-#     decrypted = sub89(ciphertext, key_str)
+#     decrypted = decrypter.vigenere_cipher(ciphertext, key_str)
 
 #     return decrypted, key_str
 
@@ -207,7 +188,7 @@ def decrypt(cipher: str) -> str:
 #                 total_fitness += fitness
 
 #         key_str = "".join(key)
-#         decrypted = sub89(ciphertext, key_str)
+#         decrypted = decrypter.vigenere_cipher(ciphertext, key_str)
 
 #         # Calculate overall fitness
 #         if len(decrypted) >= 3:

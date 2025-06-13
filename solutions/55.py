@@ -25,25 +25,6 @@ def sub(s1: str, s2: str) -> str:
     return add(s1, s2)
 
 
-def sub89(s1: str, s2: str) -> str:
-    if len(s2) > len(s1):
-        s1, s2 = s2, s1
-
-    if not s2:
-        return s1
-
-    alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
-    c_to_index = {c: i for i, c in enumerate(alphabet)}
-    nums1, nums2 = [[c_to_index[c] for c in s] for s in [s1, s2]]
-
-    n = len(alphabet)
-    result = []
-    for a, b in zip(nums1, itertools.cycle(nums2)):
-        result.append(alphabet[(a - b) % n])
-
-    return "".join(result)
-
-
 text = """
 The Ballad of Peale's Rum
 
@@ -100,4 +81,4 @@ key_string = ";".join(equation for _, equation in result).lower()
 
 @decrypter.decrypter(chapter=55)
 def decrypt(cipher: str) -> str:
-    return sub89(cipher, key_string)
+    return decrypter.vigenere_cipher(cipher, key_string)
