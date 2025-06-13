@@ -1,5 +1,4 @@
 import decrypter
-import itertools
 
 
 def get_path(s):
@@ -16,6 +15,7 @@ def decrypt(cipher: str) -> str:
 
 
 # import collections
+# import itertools
 
 
 # def get_normalised_three_grams(text: str) -> collections.Counter:
