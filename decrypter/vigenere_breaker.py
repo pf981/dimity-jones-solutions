@@ -93,13 +93,16 @@ def find_key_length(ciphertext: str, max_length: int = 20) -> int:
 
 
 def find_best_key_char(
-    ciphertext: str, reference_trigrams: Dict[str, float], decrypter_func
+    ciphertext: str,
+    reference_trigrams: Dict[str, float],
+    decrypter_func,
+    key_chars: str = LOWERCASE_LETTERS,
 ) -> Tuple[str, float]:
     """Find the best key character for a cipher subsequence."""
     best_char = "a"
     best_fitness = float("inf")
 
-    for key_char in LOWERCASE_LETTERS:
+    for key_char in key_chars:
         try:
             decrypted = decrypter_func(ciphertext, key_char)
 
@@ -141,6 +144,7 @@ def break_vigenere_cipher(
     reference_text: str,
     decrypter_func,
     max_key_length: int = 20,
+    key_chars: str = LOWERCASE_LETTERS,
     verbose: bool = True,
 ) -> Tuple[str, str]:
     """
@@ -181,7 +185,9 @@ def break_vigenere_cipher(
                 # Fallback to general trigrams
                 ref_trigrams = get_normalized_ngrams(reference_text, [3])
 
-            key_char, fitness = find_best_key_char(subseq, ref_trigrams, decrypter_func)
+            key_char, fitness = find_best_key_char(
+                subseq, ref_trigrams, decrypter_func, key_chars
+            )
             key.append(key_char)
             if verbose:
                 print(f"Position {pos + 1}: '{key_char}' (fitness: {fitness:.4f})")
@@ -198,6 +204,7 @@ def try_multiple_key_lengths(
     decrypter_func,
     min_length: int = 1,
     max_length: int = 15,
+    key_chars: str = LOWERCASE_LETTERS,
     verbose: bool = True,
 ) -> List[Tuple[str, str, float]]:
     """
@@ -231,7 +238,9 @@ def try_multiple_key_lengths(
                     # Fallback to general trigrams
                     ref_trigrams = get_normalized_ngrams(reference_text, [3])
 
-                key_char, _ = find_best_key_char(subseq, ref_trigrams, decrypter_func)
+                key_char, _ = find_best_key_char(
+                    subseq, ref_trigrams, decrypter_func, key_chars
+                )
                 key.append(key_char)
 
         key_str = "".join(key)
