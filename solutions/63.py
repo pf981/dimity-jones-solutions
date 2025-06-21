@@ -1,83 +1,126 @@
-import decrypter
-
-text = """
-BF|EGFEDE,|BAEG|B|GEED|BF,|EAFE,
+text = """BF|EGFEDE,|BAEG|B|GEED|BF,|EAFE,
 FABE|EAAGEECEGF,|EBCD|EGDFBEE:
 BF|B'AE,|FAD|FAAEE|BBFA|DEAEAG,|FADE
-A|AEDEE|FA|BAGDED|AF,|EGDBDBEED|...?
-"""
+A|AEDEE|FA|BAGDED|AF,|EGDBDBEED|...?"""
 
-text.split("|")
+reference_text = []
+for chapter in range(63):
+    with open(f"data/{chapter:02}.chp") as f:
+        reference_text.append(f.read())
+reference_text = "".join(reference_text)
 
-m = {}
-for ch in "ABCDEFG":
-    replacement = []
-    i = ord(ch)
+import collections
+import random
+import re
+
+
+def to_notes(s: str) -> str:
+    return "".join(chr((ord(c) - ord("A")) % 7 + ord("A")) for c in s.upper())
+
+
+def to_letters(note: str) -> str:
+    result = []
+    i = ord(note)
     while i <= ord("Z"):
-        replacement.append(chr(i))
+        result.append(chr(i))
         i += 7
-    replacement = "/".join(replacement)
-    m[ch] = f"({replacement})"
-
-text2 = text.lower()
-for ch, replacement in m.items():
-    text2 = text2.replace(ch.lower(), replacement)
-print("\n".join(text2.split("|")))
-
-# IF (B/I/P/W)(F/M/T)
-#    (E/L/S/Z)(G/N/U)(F/M/T)(E/L/S/Z)(D/K/R/Y)(E/L/S/Z),
-#  ..EN  (B/I/P/W)(A/H/O/V)(E/L/S/Z)(G/N/U)
-# I  (B/I/P/W)
-# USED   (G/N/U)(E/L/S/Z)(E/L/S/Z)(D/K/R/Y)
-# IT / IF   (B/I/P/W)(F/M/T),
-#     (E/L/S/Z)(A/H/O/V)(F/M/T)(E/L/S/Z),
-# THIS  (F/M/T)(A/H/O/V)(B/I/P/W)(E/L/S/Z)
-# SHAG.... (E/L/S/Z)(A/H/O/V)(A/H/O/V)(G/N/U)(E/L/S/Z)(E/L/S/Z)(C/J/Q/X)(E/L/S/Z)(G/N/U)(F/M/T),
-# SICK (E/L/S/Z)(B/I/P/W)(C/J/Q/X)(D/K/R/Y)
-# (E/L/S/Z)(G/N/U)(D/K/R/Y)(F/M/T)(B/I/P/W)(E/L/S/Z)(E/L/S/Z):
-# IF/IT     (B/I/P/W)(F/M/T)
-# I'VE  (B/I/P/W)'(A/H/O/V)(E/L/S/Z),
-# MAY/FAD/FAR/FOR  (F/M/T)(A/H/O/V)(D/K/R/Y)
-# THESE  (F/M/T)(A/H/O/V)(A/H/O/V)(E/L/S/Z)(E/L/S/Z)
-# WITH (B/I/P/W)(B/I/P/W)(F/M/T)(A/H/O/V)
-# REASON    (D/K/R/Y)(E/L/S/Z)(A/H/O/V)(E/L/S/Z)(A/H/O/V)(G/N/U),
-# MADE  (F/M/T)(A/H/O/V)(D/K/R/Y)(E/L/S/Z)
-# A   (A/H/O/V)
-# HERES   (A/H/O/V)(E/L/S/Z)(D/K/R/Y)(E/L/S/Z)(E/L/S/Z)
-# TO  (F/M/T)(A/H/O/V)
-# PONDER    (B/I/P/W)(A/H/O/V)(G/N/U)(D/K/R/Y)(E/L/S/Z)(D/K/R/Y)
-# OF   (A/H/O/V)(F/M/T),
-#      (E/L/S/Z)(G/N/U)(D/K/R/Y)(B/I/P/W)(D/K/R/Y)(B/I/P/W)(E/L/S/Z)(E/L/S/Z)(D/K/R/Y)
-# ...?
+    return result
 
 
-from decrypter import vigenere_breaker
+def get_candidates(notes: str, n_candidates: int) -> list[str]:
+    result = []
+    letters_list = [to_letters(note) for note in notes]
+    for _ in range(n_candidates):
+        candidate = [random.choice(letters) for letters in letters_list]
+        result.append("".join(candidate))
+    return result
 
-reference_text = ""
-for chapter in range(62):
-    with open(f"data/{chapter:02}.chp", "r") as f:
-        reference_text += f.read()
 
-c = decrypter.decrypter(chapter=63)(lambda x: x)
-ciphertext = c.decrypt_one_chapter()[:500]
+ref_words = re.sub(r"[^a-z ]", "", reference_text.lower()).split()
+ref_counts = collections.Counter(ref_words)
+m = collections.defaultdict(list)
+for word, count in ref_counts.items():
+    m[to_notes(word)].append((count, word))
 
-result = vigenere_breaker.try_multiple_key_lengths(
-    ciphertext,
-    reference_text,
-    decrypter_func=decrypter.vigenere_cipher,
-    min_length=1,
-    max_length=40,
-    key_chars=vigenere_breaker.ALPHABET,
-    verbose=True,
-)
+for notes in m:
+    m[notes].sort(reverse=True)
 
-decrypted, key = vigenere_breaker.break_vigenere_cipher(
-    ciphertext,
-    reference_text,
-    decrypter.vigenere_cipher,
-    max_key_length=200,
-    key_chars=vigenere_breaker.ALPHABET,
-)
 
-# print(f"Key: {key}")
-# print(f"Decrypted: {decrypted[:200]}...")
+notes_list = re.sub(r"[^A-G|]", "", text).split("|")
+
+for notes in notes_list:
+    if not notes:
+        continue
+    candidates = m[notes][:5]
+    print(notes, "->", ", ".join(word for _, word in candidates))
+
+text = """BF|EGFEDE,|BAEG|B|GEED|BF,|EAFE,
+FABE|EAAGEECEGF,|EBCD|EGDFBEE:
+BF|B'AE,|FAD|FAAEE|BBFA|DEAEAG,|FADE
+A|AEDEE|FA|BAGDED|AF,|EGDBDBEED|...?"""
+
+
+# notes = 'EGFEDE'
+# notes = 'BAEG'
+# notes = 'FABE' # THIS
+# notes = 'EGDFBEE' # SURMIZE / SURMISE
+# notes = 'EAFE'
+notes = "EAAGEECEGF"  # EAAGEEcent
+[to_letters(note) for note in notes]
+get_candidates(notes, 20)
+# [['E', 'L', 'S', 'Z'],
+#  ['G', 'N', 'U'],
+#  ['F', 'M', 'T'],
+#  ['E', 'L', 'S', 'Z'],
+#  ['D', 'K', 'R', 'Y'],
+#  ['E', 'L', 'S', 'Z']]
+# ... ENTERS
+...
+
+# BF -> it, if, im, wf, pm                                 If
+# EGFEDE, ->                                               enters
+# BAEG ->                                                  when
+# B -> i, b, p, w                                          I
+# GEED -> need, used                                       need
+# BF, -> it, if, im, wf, pm                                it,
+# EAFE, -> some, same, safe, late, lots                    some
+# FABE -> this, fail, tops, tail, maws, maps               this
+# EAAGEECEGF, ->                                           ,
+# EBCD -> lick, sick                                       sick
+# EGDFBEE:                                                 SURMIZE / SURMISE:
+# BF -> it, if, im, wf, pm
+# B'AE -> was, ive, woe, pal                               I've
+# FAD -> for, may, far, thy, mad                           for
+# FAAEE -> those, moves, tools, fools, faves               those
+# BBFA -> with, bifa                                       with
+# DEAEAG, -> reason                                        reason
+# FADE -> more, make, take, made, tore, fake, toys, fade   more
+# A ->                                                     a
+# AEDEE -> verse, heres                                    verse
+# FA -> to, fo, ta, ma, mh                                 to
+# BAGDED -> wonder, poured                                 ponder
+# AF, -> of, at, am, ot                                    of
+# EGDBDBEED ->                                             EGDBDBEed
+
+# BF -> pm, wf, im, if, it
+# EGFEDE, ->
+# BAEG -> when
+# B -> w, p, b, i
+# GEED -> used, need
+# BF, -> pm, wf, im, if, it
+# EAFEFABE ->
+# EAAGEECEGF, ->
+# EBCD -> lick
+# EGDFBEE: ->
+# BF ->
+# B'AE -> pal, woe, ive, was                   I've
+# FAD -> fad, tad, toy, mad, thy
+# FAAEE -> faves, fools, tools, moves, those
+# BBFA -> bifa, with
+# DEAEAG -> reason
+# FADEA -> torso
+# AEDEE -> heres, verse
+# FA -> th, mh, ma, ta, fo
+# BAGDED -> poured, wonder
+# AF -> ot, am, at, of
+# EGDBDBEED ->
