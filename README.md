@@ -10,14 +10,15 @@ The game provides a single text file where only the first chapter is readable. E
   - **Note:** The repository does not include `00.txt`. You must download it from [the game's page](https://obnakwa.itch.io/dimityjones) and save it as `data/00.txt`.
 - `solutions/`: Python scripts that implement decryption algorithms for each chapter.
 - `tests/`: Pytest-based tests that check the correctness of decrypted chapters.
-- `requirements.txt`: Lists Python dependencies required to run the project.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python `3.12`
-- `pip` package manager
+Install uv:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
 ### Installation
 
@@ -33,18 +34,13 @@ The game provides a single text file where only the first chapter is readable. E
    Visit the [Dimity Jones in Puzzle Castle page](https://obnakwa.itch.io/dimityjones) and download the text file.  
    Save it as `data/00.txt` in the repository.
 
-3. **Install dependencies:**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
 
 ## 🧪 Running Tests
 
 Run all test cases with:
 
 ```bash
-pytest
+uv run pytest
 ```
 
 The tests will:
