@@ -20,7 +20,17 @@ import decrypter
 # # key = key[:91]  # okay
 # key = key[:143]  # good?
 
-key = "gtngtngMng|ngW_hq(gt0vtnjtngrvut*gtwgtngtneynan-ggngtk,HntJnvtnc*nrlmgtncongtlWtngtngGvdun%tngMIgnmgung8nga[gtngtngynftngtnitngNngv5#tngt gDGgE"
+# key = "gtngtngMng|ngW_hq(gt0vtnjtngrvut*gtwgtngtneynan-ggngtk,HntJnvtnc*nrlmgtncongtlWtngtngGvdun%tngMIgnmgung8nga[gtngtngynftngtnitngNngv5#tngt gDGgE" # Pretty good
+# key = "gtngtngMng|ngW_hq("
+key = "gtn"
+# gtngtngMng|ngW_hq(
+# gt0vtnjtngrvut*gtw
+# gtngtneynan-ggngtk
+# ,HntJnvtnc*nrlmgtn
+# congtlWtngtngGvdun
+# %tngMIgnmgung8nga[
+# gtngtngynftngtnitn
+# gNngv5#tngt gDGgE
 
 
 @decrypter.decrypter(chapter=65)
@@ -33,7 +43,8 @@ def decrypt(cipher: str) -> str:
 # dec = decrypter.decrypter(chapter=65)(lambda x: x)
 # ciphertext = dec.decrypt_one_chapter()[:5000]
 
-# key = "gtngtngMng|ngW_hq(gt0vtnjtngrvut*gtwgtngtneynan-ggngtk,HntJnvtnc*nrlmgtncongtlWtngtngGvdun%tngMIgnmgung8nga[gtngtngynftngtnitngNngv5#tngt gDGgE"
+# # key = "gtngtngMng|ngW_hq(gt0vtnjtngrvut*gtwgtngtneynan-ggngtk,HntJnvtnc*nrlmgtncongtlWtngtngGvdun%tngMIgnmgung8nga[gtngtngynftngtnitngNngv5#tngt gDGgE"
+# key = "gtngtngtng|ngW_hq("
 # plain = decrypter.vigenere_cipher(ciphertext, key)
 
 # # print(plain)
@@ -43,7 +54,7 @@ def decrypt(cipher: str) -> str:
 #     print(a, b)
 
 # alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
-# have, want, key = r"FLg"
+# have, want, key = r"%lM"
 # alphabet[
 #     (alphabet.index(have) - (alphabet.index(want) - alphabet.index(key)))
 #     % len(alphabet)
