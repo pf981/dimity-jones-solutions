@@ -8,4 +8,5 @@ dependencies = [
     "ipykernel>=6.30.1",
     "pytest>=8.4.1",
     "python-constraint>=1.4.0",
+    "ruff>=0.12.8",
 ]
