@@ -36,9 +36,9 @@ m = {
     # "0P": "well",
     "01": "left",
     "03": "not",
-    "00": "the",
+    "00": "a",
     # "04": "her",  # ?
-    "04": "fires",  # ?
+    "04": "mine",  # ?
     # "05": "there",  # ?
     "0Y": "bad",  # ?
     "0T": "who",
@@ -46,9 +46,12 @@ m = {
     "0X": "pretty",
     "07": "from",
     "08": "the",
-    # "09": "man",
-    "0A": "man",
-    "05": "fan",
+    "09": "firm",
+    "0A": "fair",
+    "05": "there",
+    "0B": "her",
+    "0C": "fires",
+    "0H": "rings",  # Not present, clean, darn, hard, not, in
 }
 
 result = text
@@ -97,17 +100,44 @@ words = [
 ]
 
 
-key = """There was a bat who loved to fly;
-There was a fly who loved to bat.
-The former glided through the sky;
-The latter wore a cricket hat.
-
-Their friend, a cricket, loved to saw.
-One time he wore his welcome out:
-They saw him saw their couch to straw,
-And "Former friend!" were heard to shout."""
+key = result
 
 
-@decrypter.decrypter(chapter=71)
+# key = 'A left shoe does on right foot not belong;\nI left fires fan, which wasn\'t right, but wrong.\n\nShe, truant from the law firm, sees the fair.\nthe fair but firm director 0C the fan.\n\nhe finds it hard to dig his mother\'s grave;\nHe\'d, if he could, 0H grave, hard woman save.\n\n0J 0K of summer not be called a 0L.\n0J sit by 0L, eat straight from 0K. Oh, darn.\n\n0N 0O, 0P-lighted, box-shaped 0R 0S box;\nTill round-end 0R, 0S 0O each other\'s clocks.\n\nOur aunts, who 0U, 0V their pretty gift.\n"a pretty 0U bad 0V," think we, miffed.\n\nsave those bad few who set them, none should have to take their turn\nto darn the 0P and douse the 0C 0H 0N the fires still burn.'
+def fix_line(line):
+    l = list(line)
+    if not l:
+        return line
+    l[0] = l[0].upper()
+    if not l[0].isalpha():
+        l[1] = l[1].upper()
+    return "".join(l)
+
+
+key = "\n".join(fix_line(line) for line in result.splitlines())
+
+
+@decrypter.decrypter(chapter=72)
 def decrypt(cipher: str) -> str:
     return decrypter.vigenere_cipher(cipher, key)
+
+
+import itertools
+
+dec = decrypter.decrypter(chapter=72)(lambda x: x)
+ciphertext = dec.decrypt_one_chapter()[:5000]
+
+# key = "A left shoe does on right foot not belong;\nI left mine there, which wasn't right, but wrong.\n\nShe, truant from the law firm, sees the fair.\n0B man but 09 director 0C 0B fan.\n\nhe finds it hard to dig his mother's grave;\nHe'd, if he could, 0H grave, hard woman save.\n\n0J 0K of summer not be called a 0L.\n0J sit by 0L, eat straight from 0K. Oh, darn.\n\n0N 0O, 0P-lighted, box-shaped 0R 0S box;\nTill round-end 0R, 0S 0O each other's clocks.\n\nOur aunts, who 0U, 0V their pretty gift.\n\"a pretty 0U bad 0V,\" think we, miffed.\n\nsave those bad few who set them, none should have to take their turn\nto darn the 0P and douse the 0C 0H 0N the fires still burn."
+plain = decrypter.vigenere_cipher(ciphertext, key)
+
+# print(plain)
+print(plain[:300])
+
+for a, b in zip(plain[:260], itertools.cycle(key)):
+    print(f"{a!r}, {b!r}")
+
+alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+have, want, k = r"amT"
+alphabet[
+    (alphabet.index(have) - (alphabet.index(want) - alphabet.index(k))) % len(alphabet)
+]
