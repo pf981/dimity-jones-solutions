@@ -54,7 +54,18 @@ m = {
     "0H": "that",
     "0J": "you",
     "0K": "can",
-    "0L": "fan",  # ?
+    "0L": "fan",
+    "0P": "well",  # Pretty sure
+    "0N": "in",
+    "0O": "clean",
+    # "0R": "rings",  # ?
+    # "0S": "present",  # ?
+    # "0U": "darn",  # ?
+    # "0V": "they",  # ?
+    "0R": "rings",  # ?
+    "0S": "they",  # ?
+    "0U": "darn",  # ?
+    "0V": "present",  # ?
 }
 
 result = text
@@ -62,9 +73,12 @@ for a, b in m.items():
     result = result.replace(a, b)  # .replace("called a man.", "called a Man.")
 print(result)
 
-[word for word in words if word not in m.values()]
+# import collections
+# collections.Counter(m.values())
 
-[word for word in words if len(word) == 4]
+# [word for word in words if word not in m.values()]
+
+# [word for word in words if len(word) == 4]
 
 
 words = [
@@ -137,13 +151,14 @@ ciphertext = dec.decrypt_one_chapter()[:5000]
 plain = decrypter.vigenere_cipher(ciphertext, key)
 
 # print(plain)
-print(plain[:600])
+print(plain[:3000])
+# print(key)
 
-for a, b in zip(plain[:370], itertools.cycle(key)):
-    print(f"{a!r}, {b!r}")
+# for a, b in zip(plain[:400], itertools.cycle(key)):
+#     print(f"{a!r}, {b!r}")
 
-alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
-have, want, k = r"uld"
-alphabet[
-    (alphabet.index(have) - (alphabet.index(want) - alphabet.index(k))) % len(alphabet)
-]
+# alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+# have, want, k = r"Rlp"
+# alphabet[
+#     (alphabet.index(have) - (alphabet.index(want) - alphabet.index(k))) % len(alphabet)
+# ]
