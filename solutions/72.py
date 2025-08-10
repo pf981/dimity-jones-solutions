@@ -23,8 +23,6 @@ Our aunts, 0T 0U, 0V 0W 0X gift.
 
 m = {
     "0Q": "box",
-    # "0G": "mine",
-    # "0G": "well",
     "0G": "grave",
     "0I": "save",
     "02": "right",
@@ -33,16 +31,13 @@ m = {
     "0F": "to",
     "0W": "their",
     "0E": "hard",
-    # "0P": "well",
     "01": "left",
     "03": "not",
     "00": "a",
-    # "04": "her",  # ?
-    "04": "mine",  # ?
-    # "05": "there",  # ?
-    "0Y": "bad",  # ?
+    "04": "mine",
+    "0Y": "bad",
     "0T": "who",
-    "0M": "man",  #
+    "0M": "man",
     "0X": "pretty",
     "07": "from",
     "08": "the",
@@ -55,110 +50,32 @@ m = {
     "0J": "you",
     "0K": "can",
     "0L": "fan",
-    "0P": "well",  # Pretty sure
+    "0P": "well",
     "0N": "in",
     "0O": "clean",
-    # "0R": "rings",  # ?
-    # "0S": "present",  # ?
-    # "0U": "darn",  # ?
-    # "0V": "they",  # ?
-    "0R": "rings",  # ?
-    "0S": "they",  # ?
-    "0U": "darn",  # ?
-    "0V": "present",  # ?
+    "0R": "rings",
+    "0S": "they",
+    "0U": "darn",
+    "0V": "present",
 }
 
-result = text
-for a, b in m.items():
-    result = result.replace(a, b)  # .replace("called a man.", "called a Man.")
-print(result)
 
-# import collections
-# collections.Counter(m.values())
-
-# [word for word in words if word not in m.values()]
-
-# [word for word in words if len(word) == 4]
-
-
-words = [
-    "a",
-    "bad",
-    "box",
-    "but",
-    "can",
-    "clean",
-    "darn",
-    "fair",
-    "fan",
-    "fires",
-    "firm",
-    "from",
-    "grave",
-    "hard",
-    "he",
-    "her",
-    "in",
-    "left",
-    "man",
-    "mine",
-    "not",
-    "present",
-    "pretty",
-    "right",
-    "rings",
-    "save",
-    "that",
-    "the",
-    "their",
-    "there",
-    "they",
-    "to",
-    "well",
-    "who",
-    "you",
-]
-
-
-key = result
-
-
-# key = 'A left shoe does on right foot not belong;\nI left fires fan, which wasn\'t right, but wrong.\n\nShe, truant from the law firm, sees the fair.\nthe fair but firm director 0C the fan.\n\nhe finds it hard to dig his mother\'s grave;\nHe\'d, if he could, 0H grave, hard woman save.\n\n0J 0K of summer not be called a 0L.\n0J sit by 0L, eat straight from 0K. Oh, darn.\n\n0N 0O, 0P-lighted, box-shaped 0R 0S box;\nTill round-end 0R, 0S 0O each other\'s clocks.\n\nOur aunts, who 0U, 0V their pretty gift.\n"a pretty 0U bad 0V," think we, miffed.\n\nsave those bad few who set them, none should have to take their turn\nto darn the 0P and douse the 0C 0H 0N the fires still burn.'
 def fix_line(line):
-    l = list(line)
-    if not l:
+    li = list(line)
+    if not li:
         return line
-    l[0] = l[0].upper()
-    if not l[0].isalpha():
-        l[1] = l[1].upper()
-    return "".join(l)
+    li[0] = li[0].upper()
+    if not li[0].isalpha():
+        li[1] = li[1].upper()
+    return "".join(li)
 
 
-key = "\n".join(fix_line(line) for line in result.splitlines())
+key = text
+for a, b in m.items():
+    key = key.replace(a, b)
+key = "\n".join(fix_line(line) for line in key.splitlines())
 
 
 @decrypter.decrypter(chapter=72)
 def decrypt(cipher: str) -> str:
     return decrypter.vigenere_cipher(cipher, key)
-
-
-import itertools
-
-dec = decrypter.decrypter(chapter=72)(lambda x: x)
-ciphertext = dec.decrypt_one_chapter()[:5000]
-
-# key = "A left shoe does on right foot not belong;\nI left mine there, which wasn't right, but wrong.\n\nShe, truant from the law firm, sees the fair.\n0B man but 09 director 0C 0B fan.\n\nhe finds it hard to dig his mother's grave;\nHe'd, if he could, 0H grave, hard woman save.\n\n0J 0K of summer not be called a 0L.\n0J sit by 0L, eat straight from 0K. Oh, darn.\n\n0N 0O, 0P-lighted, box-shaped 0R 0S box;\nTill round-end 0R, 0S 0O each other's clocks.\n\nOur aunts, who 0U, 0V their pretty gift.\n\"a pretty 0U bad 0V,\" think we, miffed.\n\nsave those bad few who set them, none should have to take their turn\nto darn the 0P and douse the 0C 0H 0N the fires still burn."
-plain = decrypter.vigenere_cipher(ciphertext, key)
-
-# print(plain)
-print(plain[:3000])
-# print(key)
-
-# for a, b in zip(plain[:400], itertools.cycle(key)):
-#     print(f"{a!r}, {b!r}")
-
-# alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
-# have, want, k = r"Rlp"
-# alphabet[
-#     (alphabet.index(have) - (alphabet.index(want) - alphabet.index(k))) % len(alphabet)
-# ]
