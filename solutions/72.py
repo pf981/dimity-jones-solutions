@@ -42,7 +42,7 @@ m = {
     # "05": "there",  # ?
     "0Y": "bad",  # ?
     "0T": "who",
-    "0M": "darn",
+    "0M": "man",  #
     "0X": "pretty",
     "07": "from",
     "08": "the",
@@ -51,15 +51,21 @@ m = {
     "05": "there",
     "0B": "her",
     "0C": "fires",
-    "0H": "rings",  # Not present, clean, darn, hard, not, in
+    "0H": "that",
+    "0J": "you",
+    "0K": "can",
+    "0L": "fan",  # ?
 }
 
 result = text
 for a, b in m.items():
-    result = result.replace(a, b)
+    result = result.replace(a, b)  # .replace("called a man.", "called a Man.")
 print(result)
 
 [word for word in words if word not in m.values()]
+
+[word for word in words if len(word) == 4]
+
 
 words = [
     "a",
@@ -131,13 +137,13 @@ ciphertext = dec.decrypt_one_chapter()[:5000]
 plain = decrypter.vigenere_cipher(ciphertext, key)
 
 # print(plain)
-print(plain[:300])
+print(plain[:600])
 
-for a, b in zip(plain[:260], itertools.cycle(key)):
+for a, b in zip(plain[:370], itertools.cycle(key)):
     print(f"{a!r}, {b!r}")
 
 alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
-have, want, k = r"amT"
+have, want, k = r"uld"
 alphabet[
     (alphabet.index(have) - (alphabet.index(want) - alphabet.index(k))) % len(alphabet)
 ]
