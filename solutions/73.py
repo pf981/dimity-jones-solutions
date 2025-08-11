@@ -442,11 +442,21 @@ if "mapping" not in globals():
         "30": "some",
         "31": "bubbles",
         "32": "his",
+        "33": "hit",
+        "34": "head",
+        "35": "returns",
+        "36": "dove",
+        "37": "at",
+        "38": "table",
+        "39": "name",
+        "3A": "you",
+        "3B": "get",
     }
 # 130 116 121 96 1 33 72 126 48 140 2 73 119 4 34 79 6 89 35 58 16 44 132 134 31 30 111 81 70 129 101 18 83 38? 137 61 106 8 93 32 110 85 29 71 53 86 135 62 40 46 112 24
 # 124 143 15 [94 was somewhere here] 75 84 103 11 57 139 131 74 142 82 26 90 76 97 149 136 147 91 14 105 28 25 127 51 78 109 36 22 39 138 17 123 118 99 80 42
-# 115 52 66 77 12 141 3 95 108 98 117 56 104 43 37 20 114 23 67
-
+# 115 52 66 77 12 141 3 95 108 98 117 56 104 43 37 20 114 23 67 68 63
+# ...
+# 19 but need to fix caps
 # for placeholder_int in range(int("44", 36) + 1):
 placeholder_int = 0
 while placeholder_int <= int("44", 36):
@@ -466,11 +476,19 @@ while placeholder_int <= int("44", 36):
     else:
         end = len(text)
 
+    # Truncate excessive right context so that when we print 50 chars it includes the part of interest.
+    # Try to chop at a space so that placeholders don't get split in two
+    if start + 25 < end:
+        end = start + 25
+        while end > start + 8 and text[end - 1] != " ":
+            end -= 1
+    # end = min(end, start + 25)
+
     # before = get_plaintext(text[0:start], mapping)
     # after = text[start + 2 : end]
 
     print("", end="", flush=True)
-    # %clear
+    %clear
 
     print(f'--- Choose replacement for "{placeholder}"---')
     plaintexts = {}
@@ -554,6 +572,9 @@ while placeholder_int <= int("44", 36):
 
 # latest_key = get_plaintext(text, mapping)
 # plain = '''The puzzlers began by finding the most common blanks: "07", appearing sixty-eight times, must be "the", and "04", appearing twenty-eight times, was likely "a". Dimity and Leland, stretching on tiptoe to reach the highest, filled the recesses with panels. Already this revea[ed "toot the [something]" on line three; "horn" for "0S" therefore seemed probable, especially since it would also give "a hoXu(Xand" far'''
+
+# %clear
+# print(decrypter.vigenere_cipher(ciphertext, latest_key)[:5000])
 
 # # %clear
 # for a, b in zip(plain, latest_key):
