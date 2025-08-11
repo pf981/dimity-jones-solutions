@@ -2,7 +2,6 @@ import constraint
 
 import decrypter
 
-problem = constraint.Problem()
 
 names = [
     "Frank",
@@ -33,101 +32,114 @@ names = [
     "Yves",
 ]
 
-# 1 = honest, 0 = liar
-for name in names:
-    problem.addVariable(name, [0, 1])
+constraints = []
 
 
-def add_statement_sum(speaker, group, count):
-    problem.addConstraint(
-        lambda s, *g: (sum(g) == count) if s else (sum(g) != count), (speaker, *group)
-    )
+def add_sum_constraint(speaker, group, k):
+    constraints.append({"speaker": speaker, "group": list(group), "k": k})
 
 
-def add_statement_all(speaker, group, truth=True):
-    problem.addConstraint(
-        lambda s, *g: (all(g) == truth) if s else (all(g) != truth), (speaker, *group)
-    )
+def add_all_honest(speaker, group):
+    add_sum_constraint(speaker, group, len(group))
 
 
-def add_statement_exactly_one(speaker, group):
-    add_statement_sum(speaker, group, 1)
+def add_all_liars(speaker, group):
+    add_sum_constraint(speaker, group, 0)
 
 
-def add_statement_exactly_one_lies(speaker, group):
-    problem.addConstraint(
-        lambda s, *g: (sum(x == 0 for x in g) == 1)
-        if s
-        else (sum(x == 0 for x in g) != 1),
-        (speaker, *group),
-    )
+def add_exactly_one_liar(speaker, group):
+    add_sum_constraint(speaker, group, len(group) - 1)
 
 
 # 1. "One lies," said Frank of Bea and Quinn.
-add_statement_exactly_one_lies("Frank", ["Bea", "Quinn"])
+add_exactly_one_liar("Frank", ["Bea", "Quinn"])
 
 # 2. "Both lie," said Frank of Tom and Phinn.
-add_statement_all("Frank", ["Tom", "Phinn"], truth=False)
+add_all_liars("Frank", ["Tom", "Phinn"])
 
-# 3. "He lies," said Wes of Vic, who said "Ut lies," who said the same of Ned.
-add_statement_all("Wes", ["Vic"], truth=False)
-add_statement_all("Vic", ["Ut"], truth=False)
-add_statement_all("Ut", ["Ned"], truth=False)
+# 3. Chain: Wes -> Vic, Vic -> Ut, Ut -> Ned (each: "X lies")
+add_sum_constraint("Wes", ["Vic"], 0)
+add_sum_constraint("Vic", ["Ut"], 0)
+add_sum_constraint("Ut", ["Ned"], 0)
 
-# 4. "Just one of Seth, Quinn, Em, and Bea are honest," Frank said earnestly.
-add_statement_exactly_one("Frank", ["Seth", "Quinn", "Em", "Bea"])
+# 4. "Just one of Seth, Quinn, Em, and Bea Are honest," Frank said.
+add_sum_constraint("Frank", ["Seth", "Quinn", "Em", "Bea"], 1)
 
-# 5. "Of five: me, Oz, Raine, Chad, and Lou," Said Mar, "there are an honest two."
-add_statement_sum("Mar", ["Mar", "Oz", "Raine", "Chad", "Lou"], 2)
+# 5. Mar: "Of me, Oz, Raine, Chad, and Lou there are two honest."
+add_sum_constraint("Mar", ["Mar", "Oz", "Raine", "Chad", "Lou"], 2)
 
-# 6. Phinn, Xu, and Bea drawn from the crowd, "Just one is honest," Frank avowed.
-add_statement_exactly_one("Frank", ["Phinn", "Xu", "Bea"])
+# 6. Frank: "Just one is honest" among Phinn, Xu, and Bea.
+add_sum_constraint("Frank", ["Phinn", "Xu", "Bea"], 1)
 
-# 7. "Among myself, Chad, Lou, and Mar," Said Oz, "three honest persons are."
-add_statement_sum("Oz", ["Oz", "Chad", "Lou", "Mar"], 3)
+# 7. Oz: among myself, Chad, Lou, Mar — three honest.
+add_sum_constraint("Oz", ["Oz", "Chad", "Lou", "Mar"], 3)
 
-# 8. Said Frank of Xu, Phinn, Tom, and Kay, "All four are honest as the day."
-add_statement_all("Frank", ["Xu", "Phinn", "Tom", "Kay"], truth=True)
+# 8. Frank about Xu, Phinn, Tom, Kay: "All four are honest."
+add_all_honest("Frank", ["Xu", "Phinn", "Tom", "Kay"])
 
-# 9. "He lies," said Geoff of Hank, who said "Irv lies," who said the same of Ned.
-add_statement_all("Geoff", ["Hank"], truth=False)
-add_statement_all("Hank", ["Irv"], truth=False)
-add_statement_all("Irv", ["Ned"], truth=False)
+# 9. Chain: Geoff -> Hank, Hank -> Irv, Irv -> Ned  ("X lies")
+add_sum_constraint("Geoff", ["Hank"], 0)
+add_sum_constraint("Hank", ["Irv"], 0)
+add_sum_constraint("Irv", ["Ned"], 0)
 
-# 10. "One lies," said Frank of Phinn and Tom.
-add_statement_exactly_one_lies("Frank", ["Phinn", "Tom"])
+# 10. Frank: "One lies" of Phinn and Tom.
+add_exactly_one_liar("Frank", ["Phinn", "Tom"])
 
-# 11. "Of Zach and Jai, one lies," said Dom.
-add_statement_exactly_one_lies("Dom", ["Zach", "Jai"])
+# 11. Dom: "Of Zach and Jai, one lies."
+add_exactly_one_liar("Dom", ["Zach", "Jai"])
 
-# 12. "Me 'n Mar's both honest," Chad averred.
-add_statement_all("Chad", ["Chad", "Mar"], truth=True)
+# 12. Chad: "Me 'n Mar's both honest."
+add_sum_constraint("Chad", ["Chad", "Mar"], 2)
 
-# 13. Said Raine, "Chad's honest."
-add_statement_all("Raine", ["Chad"], truth=True)
+# 13. Raine: "Chad's honest."
+add_sum_constraint("Raine", ["Chad"], 1)
 
-# 14. Lou concurred. (with Raine, so same as above)
-add_statement_all("Lou", ["Chad"], truth=True)
+# 14. Lou concurs (also says Chad honest).
+add_sum_constraint("Lou", ["Chad"], 1)
 
-# 15. Asked who of Bea, Quinn, Phinn, Tom, Em Were honest, Frank said, "All of them."
-add_statement_all("Frank", ["Bea", "Quinn", "Phinn", "Tom", "Em"], truth=True)
+# 15. Frank on Bea, Quinn, Phinn, Tom, Em: "All of them."
+add_all_honest("Frank", ["Bea", "Quinn", "Phinn", "Tom", "Em"])
 
-# 16. "Of my two comrades, Dom and Jai," Attested Zach, "Both never lie."
-add_statement_all("Zach", ["Dom", "Jai"], truth=True)
+# 16. Zach: "Dom and Jai both never lie."
+add_all_honest("Zach", ["Dom", "Jai"])
 
-# 17. Frank talked about Phinn, Em, and Bea: "Just one's a liar of the three."
-add_statement_exactly_one_lies("Frank", ["Phinn", "Em", "Bea"])
+# 17. Frank about Phinn, Em, Bea: "Just one's a liar of the three." -> exactly one liar => sum honest == 2
+add_sum_constraint("Frank", ["Phinn", "Em", "Bea"], 2)
 
-# 18. "Geoff lies," said Ann. "Yves lies," said Wes.
-add_statement_all("Ann", ["Geoff"], truth=False)
-add_statement_all("Wes", ["Yves"], truth=False)
+# 18. Ann: "Geoff lies."
+add_sum_constraint("Ann", ["Geoff"], 0)
 
-# 19. Both Vic and Geoff lie? Yves said "Yes."
-add_statement_all("Yves", ["Vic", "Geoff"], truth=False)
+# 19. Wes: "Yves lies." (Wes also said Vic lies earlier)
+add_sum_constraint("Wes", ["Yves"], 0)
+
+# 20. Yves: "Both Vic and Geoff lie?" -> Yves says both lie
+add_all_liars("Yves", ["Vic", "Geoff"])
+
+
+def add_constraint(problem, speaker, group, k):
+    other = [g for g in group if g != speaker]
+    vars_for_constraint = [speaker] + other
+
+    def constraint(s, *others):
+        group_sum = s + sum(others) if speaker in group else sum(others)
+        if s == 1:
+            return group_sum == k
+        else:
+            return group_sum != k
+
+    problem.addConstraint(constraint, vars_for_constraint)
+
+
+problem = constraint.Problem()
+
+for name in names:
+    problem.addVariable(name, [0, 1])  # 1 honest, 0 liar
+
+for c in constraints:
+    add_constraint(problem, c["speaker"], c["group"], c["k"])
 
 solution = problem.getSolution()
 honest = [name for name, is_honest in solution.items() if is_honest]
-
 key = "".join(name[0].lower() for name in sorted(honest))
 
 
