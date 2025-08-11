@@ -285,10 +285,20 @@ def fix_line(line):
     # .! followed by space (optionally with quote) is capital. Note that ?" and ?' do not result in capitals. Nor does exclamation  marks
     line = "".join(li)
     line = re.sub(
-        r'\. *["\']? *[a-z]',
+        r'[^.]\. *["\']? *[a-z]',
         lambda s: s.group(0)[:-1] + s.group(0)[-1].upper(),
         line,
     )
+
+    # '''says, "nice arms."''' should be '''says, "Nice arms."'''
+    line = re.sub(
+        r'"[a-z]',
+        lambda s: s.group(0)[:-1] + s.group(0)[-1].upper(),
+        line,
+    )
+
+    # Bloody Mary
+    line = line.replace("bloody Mary", "Bloody Mary").replace("barry", "Barry")
 
     return line
 
@@ -451,12 +461,41 @@ if "mapping" not in globals():
         "39": "name",
         "3A": "you",
         "3B": "get",
+        "3C": "bloody",
+        "3D": "her",
+        "3E": "find",
+        "3F": "with",
+        "3G": "away",
+        "3H": "nice",
+        "3I": "these",
+        "3J": "antlers",
+        "3K": "dummy",
+        "3L": "barry",
+        "3M": "that's",
+        "3N": "odd",
+        "3O": "face",
+        "3P": "can't",
+        "3Q": "harass",
+        "3R": "half",
+        "3S": "hope",
+        "3T": "arms",
+        "3U": "wings",
+        "3V": "snorting",
+        "3W": "pacifist",
+        "3X": "tears",
+        "3Y": "gives",
+        "3Z": "him",
+        "40": "bottom",
+        "41": "picks",
+        "42": "up",
+        "43": "window",
+        "44": "flee",
     }
 # 130 116 121 96 1 33 72 126 48 140 2 73 119 4 34 79 6 89 35 58 16 44 132 134 31 30 111 81 70 129 101 18 83 38? 137 61 106 8 93 32 110 85 29 71 53 86 135 62 40 46 112 24
 # 124 143 15 [94 was somewhere here] 75 84 103 11 57 139 131 74 142 82 26 90 76 97 149 136 147 91 14 105 28 25 127 51 78 109 36 22 39 138 17 123 118 99 80 42
 # 115 52 66 77 12 141 3 95 108 98 117 56 104 43 37 20 114 23 67 68 63
 # ...
-# 19 but need to fix caps
+# 7 but need to fix caps
 # for placeholder_int in range(int("44", 36) + 1):
 placeholder_int = 0
 while placeholder_int <= int("44", 36):
@@ -468,8 +507,8 @@ while placeholder_int <= int("44", 36):
 
     start = text.index(placeholder)
 
-    for next_placeholder_int in range(placeholder_int + 1):
-        next_placeholder = to_base36(placeholder_int + 1)
+    for next_placeholder_int in range(placeholder_int + 1, int("44", 36) + 1):
+        next_placeholder = to_base36(next_placeholder_int + 1)
         if next_placeholder not in mapping:
             end = text.index(next_placeholder)
             break
@@ -488,7 +527,7 @@ while placeholder_int <= int("44", 36):
     # after = text[start + 2 : end]
 
     print("", end="", flush=True)
-    %clear
+    # %clear
 
     print(f'--- Choose replacement for "{placeholder}"---')
     plaintexts = {}
