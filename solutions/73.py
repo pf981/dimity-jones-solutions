@@ -1,3 +1,5 @@
+import re
+
 import decrypter
 
 text = """00 01 02 place 03 04 certain 05 06 07 08, 09 07 0A 0B 0C 0D 0E 0F 0G 0H 0I 03 07 0J.
@@ -272,10 +274,23 @@ def fix_line(line):
     li = list(line)
     if not li:
         return line
+
+    # Line start has capital
     li[0] = li[0].upper()
+
+    # If line starts with punctuation, then second letter is capital
     if not li[0].isalpha() and len(li) > 1:
         li[1] = li[1].upper()
-    return "".join(li)
+
+    # .! followed by space (optionally with quote) is capital. Note that ?" and ?' do not result in capitals. Nor does exclamation  marks
+    line = "".join(li)
+    line = re.sub(
+        r'\. *["\']? *[a-z]',
+        lambda s: s.group(0)[:-1] + s.group(0)[-1].upper(),
+        line,
+    )
+
+    return line
 
 
 def get_plaintext(text: str, m: dict[str, str]) -> str:
@@ -290,7 +305,6 @@ def get_plaintext(text: str, m: dict[str, str]) -> str:
 
 # %clear
 # print(key)
-key = "todo"
 
 
 @decrypter.decrypter(chapter=73)
@@ -315,11 +329,124 @@ def to_base36(num: int) -> str:
     return result.zfill(2)
 
 
-
-
 if "mapping" not in globals():
-    mapping = {}
-# 130 116 121 96 1 33 72 126 48 140 2 73 119 4 34 79 6 89 35 58 16 44 132 134 31 30 111 81 70 129 101 18 83
+    mapping = {
+        "00": "this",
+        "01": "story",
+        "02": "takes",
+        "03": "on",
+        "04": "a",
+        "05": "date",
+        "06": "in",
+        "07": "the",
+        "08": "fall",
+        "09": "when",
+        "0A": "air",
+        "0B": "is",
+        "0C": "sweet",
+        "0D": "and",
+        "0E": "dead",
+        "0F": "leaves",
+        "0G": "are",
+        "0H": "nine",
+        "0I": "deep",
+        "0J": "ground",
+        "0K": "bear",
+        "0L": "duck",
+        "0M": "to",
+        "0N": "visit",
+        "0O": "country",
+        "0P": "club",
+        "0Q": "she",
+        "0R": "likes",
+        "0S": "horn",
+        "0T": "they",
+        "0U": "park",
+        "0V": "big",
+        "0W": "lot",
+        "0X": "do",
+        "0Y": "we",
+        "0Z": "have",
+        "10": "reservations",
+        "11": "asks",
+        "12": "of",
+        "13": "course",
+        "14": "says",
+        "15": "mean",
+        "16": "close",
+        "17": "i",
+        "18": "forgot",
+        "19": "my",
+        "1A": "wallet",
+        "1B": "he",
+        "1C": "don't",
+        "1D": "even",
+        "1E": "single",
+        "1F": "buck",
+        "1G": "that",
+        "1H": "will",
+        "1I": "be",
+        "1J": "okay",
+        "1K": "it's",
+        "1L": "me",
+        "1M": "play",
+        "1N": "back",
+        "1O": "golf",
+        "1P": "what",
+        "1Q": "time",
+        "1R": "it",
+        "1S": "who",
+        "1T": "little",
+        "1U": "but",
+        "1V": "not",
+        "1W": "just",
+        "1X": "one",
+        "1Y": "your",
+        "1Z": "watch",
+        "20": "wound",
+        "21": "observes",
+        "22": "battery",
+        "23": "remembers",
+        "24": "charge",
+        "25": "buffet",
+        "26": "then",
+        "27": "follow",
+        "28": "lead",
+        "29": "roll",
+        "2A": "die",
+        "2B": "breaks",
+        "2C": "does",
+        "2D": "well",
+        "2E": "better",
+        "2F": "than",
+        "2G": "strikes",
+        "2H": "out",
+        "2I": "let",
+        "2J": "down",
+        "2K": "sorry",
+        "2L": "for",
+        "2M": "himself",
+        "2N": "later",
+        "2O": "bar",
+        "2P": "where",
+        "2Q": "an",
+        "2R": "old",
+        "2S": "rock",
+        "2T": "orders",
+        "2U": "stout",
+        "2V": "glass",
+        "2W": "punch",
+        "2X": "drink",
+        "2Y": "dives",
+        "2Z": "blows",
+        "30": "some",
+        "31": "bubbles",
+        "32": "his",
+    }
+# 130 116 121 96 1 33 72 126 48 140 2 73 119 4 34 79 6 89 35 58 16 44 132 134 31 30 111 81 70 129 101 18 83 38? 137 61 106 8 93 32 110 85 29 71 53 86 135 62 40 46 112 24
+# 124 143 15 [94 was somewhere here] 75 84 103 11 57 139 131 74 142 82 26 90 76 97 149 136 147 91 14 105 28 25 127 51 78 109 36 22 39 138 17 123 118 99 80 42
+# 115 52 66 77 12 141 3 95 108 98 117 56 104 43 37 20 114 23 67
+
 # for placeholder_int in range(int("44", 36) + 1):
 placeholder_int = 0
 while placeholder_int <= int("44", 36):
@@ -331,20 +458,25 @@ while placeholder_int <= int("44", 36):
 
     start = text.index(placeholder)
 
-    next_placeholder = to_base36(placeholder_int + 1)
-    end = text.index(next_placeholder) if next_placeholder <= "44" else len(text)
+    for next_placeholder_int in range(placeholder_int + 1):
+        next_placeholder = to_base36(placeholder_int + 1)
+        if next_placeholder not in mapping:
+            end = text.index(next_placeholder)
+            break
+    else:
+        end = len(text)
 
     # before = get_plaintext(text[0:start], mapping)
     # after = text[start + 2 : end]
 
     print("", end="", flush=True)
-    %clear
+    # %clear
 
     print(f'--- Choose replacement for "{placeholder}"---')
     plaintexts = {}
     keys = {}
     for i, word in enumerate(replacement_words, 1):
-        if word in mapping:
+        if word in mapping.values():
             continue
 
         new_mapping = mapping.copy()
@@ -361,31 +493,31 @@ while placeholder_int <= int("44", 36):
         print(f"--- Plaintext ---")
         print(f"{plaintext}")
 
-    print('\n---------')
-    print('---------')
-    print('---------')
+    print("\n---------")
+    print("---------")
+    print("---------")
     max_key_len = max(len(key) for key in keys.values())
     for i, key in keys.items():
         key = (
-            key
-            .replace("\n", "@")
+            key.replace("\n", "@")
             .replace("\\", "~")
+            .replace("'", "`")
             .ljust(max_key_len)
         )[-50:]
-        print(f'{str(i).rjust(3)}: {key!r}')
+        print(f"{str(i).rjust(3)}: {key!r}")
 
-    print('\n---------')
-    print('---------')
-    print('---------')
+    print("\n---------")
+    print("---------")
+    print("---------")
     max_plaintext_len = max(len(plaintext) for plaintext in plaintexts.values())
     for i, plaintext in plaintexts.items():
         plaintext = (
-            plaintext
-            .replace("\n", "@")
+            plaintext.replace("\n", "@")
             .replace("\\", "~")
+            .replace("'", "`")
             .ljust(max_plaintext_len)
         )[-50:]
-        print(f'{str(i).rjust(3)}: {plaintext!r}')
+        print(f"{str(i).rjust(3)}: {plaintext!r}")
     print()
 
     do_quit = False
@@ -419,3 +551,10 @@ while placeholder_int <= int("44", 36):
 
 # %clear
 # print(get_plaintext(text, mapping))
+
+# latest_key = get_plaintext(text, mapping)
+# plain = '''The puzzlers began by finding the most common blanks: "07", appearing sixty-eight times, must be "the", and "04", appearing twenty-eight times, was likely "a". Dimity and Leland, stretching on tiptoe to reach the highest, filled the recesses with panels. Already this revea[ed "toot the [something]" on line three; "horn" for "0S" therefore seemed probable, especially since it would also give "a hoXu(Xand" far'''
+
+# # %clear
+# for a, b in zip(plain, latest_key):
+#     print(f'{a!r} {b!r}')
