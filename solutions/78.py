@@ -365,9 +365,8 @@ nnmytthmmheeoneeohdirltatcemeh""",
 
 grid = [row1 + row2 for row1, row2 in zip(walls[0].splitlines(), walls[1].splitlines())]
 
-r = 29
+r = 30
 c = 47
-grid[r][c]
 # stack[0] = (None, *stack[0][1:])
 result = []
 for (
@@ -376,12 +375,14 @@ for (
     _,
     _,
 ) in stack:
-    ch = grid[r][c]
-    result.append(write.replace("l", ch).replace("L", ch.upper()))
-    # print(f"{grid[r][c]}", end="")
+    print(f"{heading=} {write=}")
     if heading:
         r += (heading == "S") - (heading == "N")
         c += (heading == "E") - (heading == "W")
+    ch = grid[r][c]
+    print(f"{heading=} {write=} {ch=}", flush=True)
+    result.append(write.replace("l", ch).replace("L", ch.upper()))
+    # print(f"{grid[r][c]}", end="")
 
 print("".join(result))
 
