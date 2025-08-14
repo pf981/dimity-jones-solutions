@@ -1,4 +1,3 @@
-import collections
 import re
 
 import decrypter
@@ -11,11 +10,11 @@ actions = []
 
 # "How to Write a Poem"
 # "Start somewhere; Write this letter capitalized"
-actions.append(("S", "L"))
+actions.append(("F", "L"))
 
-# Straight and right say "Write this letter."
+# They entered an identical room with closed doors in the wall before them and in the wall to their right; each sported a sign marked, "Write this letter."
+# "What letter?" said Leland, opening the door to the right (which caused the door they had just passed through to swing softly shut).
 actions.append(("R", "l"))
-#    Haven't handled F
 
 # The room it led to had one other door in the opposite wall, marked "Write this letter"; they opened and passed through it
 actions.append(("F", "l"))
@@ -24,21 +23,58 @@ actions.append(("F", "l"))
 actions.append(("B", ""))
 
 #  They had no choice but to backtrack again, straight ahead, through the second door they'd passed through, which on this side was marked "Start somewhere; Write this letter capitalized". They passed through it, back to the first room, which Dimity now thought of as the "Start somewhere" room.
-#    They backtracked could mean 180 then straight? But there are multiple backtracks in a row
-"""
+actions.append(("B", ""))
 
+# Their choices were either to backtrack through the very first door, now on their left (which was marked, sure enough, on this side, "How to Write a Poem"), or to continue through the other door marked "Write this letter", now on their right. They went right.
+actions.append(("R", "l"))
 
-Their choices were either to backtrack through the very first door, now on their left (which was marked, sure enough, on this side, "How to Write a Poem"), or to continue through the other door marked "Write this letter", now on their right. They went right.
+# In this next room, there were doors to the left and straight ahead marked "Write this letter followed by a space." They took the door straight ahead.
+actions.append(("F", "l "))
 
-In this next room, there were doors to the left and straight ahead marked "Write this letter followed by a space." They took the door straight ahead. The only option from the next room was a door to the right marked "Write this letter"; they took it. Now there were doors to the left, straight ahead, and to the right, marked "Write this letter". They took the door to the left. From the next room, they took the only door, to the left, marked "Write this letter twice". But the room they entered was a dead end. They backtracked, and (now to the right) backtracked again.
+#  The only option from the next room was a door to the right marked "Write this letter"; they took it.
+actions.append(("R", "l "))
 
-Leland pointed to the door on the right marked "Write this letter followed by a space". "That's the one we came through, right?"
+# Now there were doors to the left, straight ahead, and to the right, marked "Write this letter". They took the door to the left.
+actions.append(("L", "l"))
 
-"Right," said Dimity. "Correct."
+# From the next room, they took the only door, to the left, marked "Write this letter twice".
+actions.append(("L", "ll"))
 
-But she was not as sure as she could wish to be. So she began taking notes.
+# But the room they entered was a dead end. They backtracked,
+actions.append(("B", ""))
 
-They took the door straight ahead marked "Write this letter". But the next room was a dead end. They turned around and backtracked. They took the door to the right marked "Write this letter". Dead end! They backtracked. Again they backtracked -- taking the door, now straight ahead, that Leland had pointed at, for all the others, they knew, were dead ends. And they backtracked again. They took the door to the right marked "Write this letter followed by a space"."""
+# and (now to the right) backtracked again.
+actions.append(("B", ""))
+
+# Leland pointed to the door on the right marked "Write this letter followed by a space". "That's the one we came through, right?"
+#
+# "Right," said Dimity. "Correct."
+#
+# But she was not as sure as she could wish to be. So she began taking notes.
+#
+# They took the door straight ahead marked "Write this letter".
+actions.append(("F", "l"))
+
+# But the next room was a dead end. They turned around and backtracked.
+actions.append(("B", ""))
+
+# They took the door to the right marked "Write this letter".
+actions.append(("R", "l"))
+
+# Dead end! They backtracked.
+actions.append(("B", ""))
+
+# Again they backtracked
+actions.append(("B", ""))
+
+# -- taking the door, now straight ahead, that Leland had pointed at, for all the others, they knew, were dead ends.
+actions.append(("F", ""))
+
+# And they backtracked again.
+actions.append(("B", ""))
+
+# They took the door to the right marked "Write this letter followed by a space".
+actions.append(("R", "l "))
 
 
 def parse_sentence(sentence: str) -> tuple[str, str] | None:
@@ -76,17 +112,102 @@ def parse_sentence(sentence: str) -> tuple[str, str] | None:
         return None
 
 
-# collections.Counter(text.split())
-# counts = collections.Counter(
-#     [sentence.strip() for sentence in re.split(r'[.!]"? ', text)]
-# )
-# for sentence in counts:
-#     print(parse_sentence(sentence))
+for sentence in re.split(r'[.!]"? ', text):
+    sentence = sentence.strip()
+    if parsed := parse_sentence(sentence):
+        actions.append(parsed)
 
-# import decrypter
+m = {
+    "NF": "N",
+    "EF": "E",
+    "SF": "S",
+    "WF": "W",
+    "NR": "E",
+    "ER": "S",
+    "SR": "W",
+    "WR": "N",
+    "NL": "W",
+    "EL": "N",
+    "SL": "E",
+    "WL": "S",
+}
+
+rev = {"N": "S", "E": "W", "S": "N", "W": "E"}
+
+%clear
+r = c = 0
+heading = "N"
+rs = []
+cs = []
+stack = []  # [(direction, write, r, c), ...]
+for direction, write in actions:
+    # print(f"{r=} {c=} {heading=} {direction=}")
+    # print(f"    {stack=}")
+    if direction == "B":
+        prev_heading, prev_write, _, _ = stack.pop()
+        heading = rev[prev_heading]
+        direction = "F"
+        # print(f"    Backtracking: {heading}")
+    else:
+        heading = m[heading + direction]
+        stack.append((heading, write, r, c))
+
+    rs.append(r)
+    cs.append(c)
+
+    # print(f"    --> {heading}")
+    r += (heading == "S") - (heading == "N")
+    c += (heading == "E") - (heading == "W")
+
+[
+    max(r for _, _, r, _ in stack),
+    min(r for _, _, r, _ in stack),
+    max(r for _, _, _, c in stack),
+    min(r for _, _, _, c in stack),
+]
+
+sorted(set(rs))
+sorted(set(cs))
+
+len(set(rs))
+len(set(cs))
 
 
-# key = "4{ydDFetmein;m\\om_5hridesaydr_etmeini hom_thriceLaydr_et =iBimhom=thrice"
+wall = """eseswbfincliedefotdadheheaotbe
+anyenfefaluifisetoaehrurheahur
+eanyoeainclrndenotdngyoueaouou
+ulyonaeftaefiesengninourheadyo
+eaenaafeftheffisiniwolrloaiygy
+cnafinihnheffedidawolalaliwino
+lifefndtaeafifededndadndowinif
+afehnataepforififnuououawingua
+nihtdnaepeotsririnnrnrndalgyou
+ifehtdnaerfotorstgrgegrgrnddur
+nifihtlirlafotstiygehthegthreh
+buinefalerlafotosiehtmomemthre
+nbnuniaupeatapopotelmororogegb
+bubuoctaehenooeopowmorfrfrogtb
+disnnestetfitehposewaoraromoho
+innudsehvobrsktisitalmffarfrog
+dbdnltorepawalntewawelesfarege
+enrdilydyisemkoonalrnslfsrsheg
+nbuasilndaeaamneruturrerfleegr
+buteifoureptsothnrurnetesearri
+uteylyundaeaepoelnrteletesfaou
+alisilrdrefthepoefninelelesfai
+iglieletriososppataninelslffru
+gelblbrrelfpetsdnandninersardn
+elbabaitbiletstsdndniletslrfrs
+lbakriarebipetotndsewslssrfrew
+elbmagitrtbsfefoololbwstffrifo
+gemeribitrofehwowofoloeigrgtle
+nramstetssfehtsloholoertifikot
+mkrarstsstofehtofwfolrtitaoisf"""
+
+# north, north, west, south, west, north 
+
+wall_lines = wall.splitlines()
+(len(wall_lines), len(wall_lines[0]))
 
 
 @decrypter.decrypter(chapter=78)
@@ -95,6 +216,7 @@ def decrypt(cipher: str) -> str:
 
 
 # import itertools
+# import decrypter
 
 # dec = decrypter.decrypter(chapter=78)(lambda x: x)
 # ciphertext = dec.decrypt_one_chapter()[:5000]
