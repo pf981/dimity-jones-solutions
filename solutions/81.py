@@ -7,12 +7,11 @@ def switchback(cipher: str, height: int):
     result = []
     for i, column in enumerate(itertools.batched(cipher, height)):
         n = len(column)
+        column += ("",) * (height - n)
 
         if i % 2 == 0:
-            column = column[::-1]
-            column = ("",) * (height - n) + column
-        else:
-            column = column + ("",) * (height - n)
+            column = reversed(column)
+
         result.append(column)
 
     return "".join(itertools.chain.from_iterable(zip(*result, strict=True)))
