@@ -68,7 +68,7 @@ actions.append(("B", ""))
 actions.append(("B", ""))
 
 # -- taking the door, now straight ahead, that Leland had pointed at, for all the others, they knew, were dead ends.
-actions.append(("F", ""))
+# actions.append(("F", ""))
 
 # And they backtracked again.
 actions.append(("B", ""))
@@ -155,7 +155,7 @@ for direction, write in actions:
     rs.append(r)
     cs.append(c)
 
-    # print(f"    --> {heading}")
+    print(f"    --> {heading}")
     r += (heading == "S") - (heading == "N")
     c += (heading == "E") - (heading == "W")
 
@@ -203,6 +203,7 @@ elbmagitrtbsfefoololbwstffrifo
 gemeribitrofehwowofoloeigrgtle
 nramstetssfehtsloholoertifikot
 mkrarstsstofehtofwfolrtitaoisf"""
+#                ^
 
 # north, north, west, south, west, north 
 
