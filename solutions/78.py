@@ -134,7 +134,7 @@ m = {
 
 rev = {"N": "S", "E": "W", "S": "N", "W": "E"}
 
-%clear
+# %clear
 r = c = 0
 heading = "N"
 rs = []
@@ -155,7 +155,7 @@ for direction, write in actions:
     rs.append(r)
     cs.append(c)
 
-    print(f"    --> {heading}")
+    # print(f"    --> {heading}")
     r += (heading == "S") - (heading == "N")
     c += (heading == "E") - (heading == "W")
 
@@ -173,7 +173,38 @@ len(set(rs))
 len(set(cs))
 
 
-wall = """eseswbfincliedefotdadheheaotbe
+walls = [
+    """ypyeypaseliwioksnaxoxdwaoswsws
+lrlhtleasiwtskokaxobanoesesosw
+ylrlyeaseiiwkoldxobnidwsenonnn
+aearlrsrsswtoldnaiaraisesoynan
+enroreeeeotskolorbrbraisenoaea
+aeoreveehtwtskoeheiraineneneul
+raroreretxiwtwkhtilodbohoynaec
+lrlrwheehexiwestslflbohwnehocl
+veyegwhenitxthtsdfdolbwseswhoc
+ererninnknhtheidolfdflseseswan
+rehwgnieriehserbdolflhwheswhna
+erwgnigekrirbnkesdsdbrewhwhden
+hwgnhgebsenkreibthdolashohside
+lvegnigebsbnknnrbessolereoehen
+reregniginseeginrabeueuararehi
+byehwenigebsbiniaieuecluesareh
+bbenhnenigegeginiesececluareri
+oraeneeininieininracereclrehxh
+ilraibvnengnnnrehlcerhtebibmom
+ppwsesebeinnedireslrhtibihmode
+ltiwilveeremseheserhtstssxedst
+rhteanahyvhisfibeueuhthtiwisie
+eiabfkwuoswiahgtoeceohtswdwiwm
+rlbbiksreyatoeosbslodrhwdnandu
+esotfolemaliopmareulsiwdnandpm
+wblttobmlweotliraseuiwdwdwonmu
+bxbbeoerasbelpterwsesiwawaitug
+odimiiiwodiwhhatstararisiitpmu
+ooaepdibsrfkptshxibihehdnaitpo
+toalfoeihntlitsbhathxeerdnoiti""",
+    """eseswbfincliedefotdadheheaotbe
 anyenfefaluifisetoaehrurheahur
 eanyoeainclrndenotdngyoueaouou
 ulyonaeftaefiesengninourheadyo
@@ -202,13 +233,162 @@ lbakriarebipetotndsewslssrfrew
 elbmagitrtbsfefoololbwstffrifo
 gemeribitrofehwowofoloeigrgtle
 nramstetssfehtsloholoertifikot
-mkrarstsstofehtofwfolrtitaoisf"""
+mkrarstsstofehtofwfolrtitaoisf""",
+    """rartlorgdhedhebzbkttkoteobwsne
+bwsneweeirartlorgdhedhebzottek
+bttakotebbwsneweeirartlorgdhed
+gdhedhebzedtikotesbwsneweeirar
+eirartlorgdhedhebzrtttkotetbws
+enbwsneweeirartlorgdhedhebzsnt
+bznrttkotebbwsneweeirartlorgdh
+orgdhedhebzwettkoterbwsneweeir
+weeirartlorgdhedhebzoatskotesb
+oterbwsneweeirartlorgdhedhebze
+hebzhrttkoteebwsneweeirartlorg
+tlorgdhedhebzdktskotehbwsnewee
+neweeirartlorgdhedhebzsttbkote
+tkoteebwsneweeirartlorgdhedheb
+edhebzletrkotetbwsneweeirartlo
+artlorgdhedhebzsetdkotetbwsnew
+wsneweeirartlorgdhedhebzwrtdko
+btwkoteabwsneweeirartlorgdhedh
+dhedhebzsdtokoterbwsneweeirart
+irartlorgdhedhebzgrtlkoteebwsn
+tbwsneweeirartlorgdhedhebzwtta
+zrsttkoteebwsneweeirartlorgdhe
+rgdhedhebzhetdkoteebwsneweeira
+eeirartlorgdhedhebzlrtekoterbw
+teibwsneweeirartlorgdhedhebzeb
+ebzrttbkoteibwsneweeirartlorgd
+lorgdhedhebzlrthkotetbwsneweei
+eweeirartlorgdhedhebzrwtnkotee
+kotebbwsneweeirartlorgdhedhebz
+dhebzrhttkoteebwsneweeirartlor
+""",
+    """rbggbrbeegerbifgbeigeebelfbbbr
+ttbieebflerteiilibetgbbggbbtrb
+beirbbibbitribibttebiilebiefib
+iilbiftiibtbbblbetebietbieibeb
+lgrtifebleitiieiigblibbibeeirt
+bigtbbtigigibibbligfrbbielbgli
+gegebtbbtgibrigiebbielibbebeli
+trbbitbeligebbilfbbbittgtgtibb
+befbiifbfeettbfeieifiiiitbiebb
+libfribbbietrbfiiibbgieigbiftb
+fitbtitfbertetbbgbbbbfettifigf
+ifbttrfbeflitrfiibgttiliiifttl
+rtebeibbgebgifbleteetegblgiebg
+tirbreireigbiftitblilttbiliief
+eiritbbfrtibtffbbibifeieerebfi
+ebifigilebbbebiffblegiigbiebii
+bbeblibbefiffbieebettfgibbbter
+rligiftbtfltbbtifbrlrrlebebttb
+bebbbtgreteiriiiibrebigbbeligg
+begibeieibifebebgrtbritbitebie
+ebeeiliibgtferbfbifrbtrigbitfb
+beflfbiibbbtbiebtriibebtttttgl
+ftbbirifbtifeiteeeibebgltegfrt
+lrfgbieibifeftiblfbibbibribbie
+ibiirilbieefiibirtgbfefpietftf
+bblttbbbgribieblfletebtebfeelb
+ibbtrbifiigifbbtbrlebletlbtllf
+gtegfbbbbrfliigrrbltbgbtbigbgb
+bibbeebbltirbiigetileilrtgtrgb
+ibrtlibgbtbbebilbitibtigttebib""",
+    """tmhereheyrammieeodanieeeececes
+mhmlliltoeyhrtdsihesmieeyticir
+odanmdhieryshioemdetriedheshyd
+rcmidilnritetmontmcicsryoehhdt
+meecetiehdiedhymemitrmeortimoe
+mmlhitthrciistrhedeersrhhtcmoi
+htmishshoieertiiemneihhyhmentd
+ahttheyeeordtahlmammlemamcrnee
+tddahdrnyohihnhhtmmomelleteecm
+ymeeatssiimrldclehylhheoityaie
+amcnsaiseeyddcccmmtemhietciieh
+ynaeilieyemytlehmteaiahhmarimi
+oycmrlrleriethheliisrieihdtttc
+mhrlmlmilheteimhteonnmnssdemlh
+mryinyedhtaeeeeedsycioadiyeene
+teleteremsamhmmiieymientmhhmen
+reistmrrhchrtemmeltdtmmtcymhte
+shmlttenmhhlmmilamnetteehmlsrt
+oytiecsmhtitthhictmthsmehtmein
+imsldhostnmhmommhiddhhtardlhmh
+taimtnaeetmsestriedhhenntatrry
+rrernmeyeheoeemdshmtneeeedlist
+eairrteecymhhneeeammersertthet
+hlychniirmtneteetheosnaeeiimri
+inileirarmhrimmecseeosrmecyeei
+edlcemetmetimiirmoiintiyrsemem
+eamctmcemmohmeiyeaeheeeishihhy
+esiersieieimilyatcssimdsnthsts
+lrdesimaalomerdsimimhmylciemed
+ysaedhoyitolarmziimiltmnhschtm""",
+    """inmmhhahdihtcyemrirrsrlmseimet
+enmieshtahmhtihtemrhyrrohecrih
+hehncetilmttnieirmdedncyhmsena
+tciermihimeiitmtcslcoehreidasm
+lrcimmaddtecdehaoieehhemsledel
+hemmtitsrhmimmeiemymeeriseieml
+lyenhhiicherathiieirmdetosmlel
+hlcereoieiaythicmemieecmietiyl
+ethmhemrsthtomyemiinemeymmdeee
+tlcyemseoamrenrtctmcdolnyhoire
+eeremmtlohtoihlehmmdsmmthtcsmr
+neanarrtdennmthemstdnmtrmdhete
+eeerettcioelisicdteynnrtsmmtil
+srottetoealrteadtlmysylmreehci
+lmmleteeiiseoeehitccoimimimoyi
+ltteatedcsmdyeoehersnaihdieyat
+mmmiymemimhirehoheaeimrmieitei
+honrmnllsetseoemererttmyheisme
+hmoyeimymrreamochtmesthemhtcea
+iemoeioinhmhsiooreotldoemaeodh
+dtehdhaeetsnhmrrdrdnhlmchimhce
+sremidiasdyilernancerheecemhei
+tllomiiilaohsetaecerneerdmlrii
+hoeyhnmhmnmhaoserneteeiricmeet
+trthmrimmhhildcsdtyemetidyhiei
+ymditdcacittsmimyiacmmmirirenn
+tseedeseeehhisletcmtdcisiencht
+meeimedothrootsimelmhehycmiyhc
+yoedeodnhotlatmdereceteimehsim
+nnmytthmmheeoneeohdirltatcemeh""",
+]
 #                ^
 
-# north, north, west, south, west, north 
+# north, north, west, south, west, north
 
-wall_lines = wall.splitlines()
-(len(wall_lines), len(wall_lines[0]))
+# wall_lines = wall.splitlines()
+# (len(wall_lines), len(wall_lines[0]))
+
+grid = [row1 + row2 for row1, row2 in zip(walls[0].splitlines(), walls[1].splitlines())]
+
+r = 29
+c = 47
+grid[r][c]
+# stack[0] = (None, *stack[0][1:])
+result = []
+for (
+    heading,
+    write,
+    _,
+    _,
+) in stack:
+    ch = grid[r][c]
+    result.append(write.replace("l", ch).replace("L", ch.upper()))
+    # print(f"{grid[r][c]}", end="")
+    if heading:
+        r += (heading == "S") - (heading == "N")
+        c += (heading == "E") - (heading == "W")
+
+print("".join(result))
+
+# grid[r][c - 3 : c + 3]
+# "It would be ... forty-eight rooms to the right, from the left edge."
+
+# "That would be column eighteen on the second wall here. Starting at the bottom?"
 
 
 @decrypter.decrypter(chapter=78)
