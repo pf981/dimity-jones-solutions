@@ -83,7 +83,65 @@ def parse_sentence(sentence: str) -> tuple[str, str] | None:
 # for sentence in counts:
 #     print(parse_sentence(sentence))
 
+# import decrypter
 
-@decrypter.decrypter(chapter=77)
+
+# key = "4{ydDFetmein;m\\om_5hridesaydr_etmeini hom_thriceLaydr_et =iBimhom=thrice"
+
+
+@decrypter.decrypter(chapter=78)
 def decrypt(cipher: str) -> str:
-    return decrypter.vigenere_cipher(cipher, "")
+    return decrypter.vigenere_cipher(cipher, "saydrletmeinimhomethrice")
+
+
+# import itertools
+
+# dec = decrypter.decrypter(chapter=78)(lambda x: x)
+# ciphertext = dec.decrypt_one_chapter()[:5000]
+
+# # key = "saydrletmein;m\\om_5hridesaydr_etmeini hom_thriceLaydr_et =iBimhom=thrice"
+# # key = "saydrletmeinimhXthrice"
+# # key = "saydrletmeinimhotoutsXXXXXXXXXXXXXXXXXXXidethriceLaydr_et =iBimhom=thrice"
+# # key = "saydrletmeinimhotoutside"
+# # ke= "saydrletmein;m|om_5hridesaydr_etmeini hom_thriceLaydr_et =iBimhom=thrice"
+# #     thriceLaydr_et =iBimhom=thrice
+# # y = "saydrletmein;m\\om_5hridesaydr_etmeini hom_thriceLaydr_et =iBimhom=thrice"
+
+
+# key = "saydrletmeinimhomethrice"
+
+# plain = decrypter.vigenere_cipher(ciphertext, key)
+
+# # print(plain)
+# print(plain[:500])
+
+# for a, b in zip(plain[:50], itertools.cycle(key)):
+#     print(a, b)
+
+# alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+# have, want, key = "$Dt"
+# alphabet[
+#     (alphabet.index(have) - (alphabet.index(want) - alphabet.index(key)))
+#     % len(alphabet)
+# ]
+
+
+# import decrypter
+# from decrypter import vigenere_breaker
+
+# reference_text = []
+# for chapter in range(78):
+#     with open(f"data/{chapter:02}.chp") as f:
+#         reference_text.append(f.read())
+# reference_text = "".join(reference_text)
+
+# ciphertext = decrypter.decrypter(78)(lambda x: x).decrypt_one_chapter()
+
+# result = vigenere_breaker.break_vigenere_cipher(
+#     ciphertext[:10000],
+#     reference_text,
+#     decrypter_func=decrypter.vigenere_cipher,
+#     key_chars=vigenere_breaker.ALPHABET,
+#     max_key_length=300,
+#     verbose=True,
+# )
