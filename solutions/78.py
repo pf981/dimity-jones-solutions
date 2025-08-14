@@ -375,7 +375,6 @@ for target_ch in target[1:]:
     for _ in range(len(q)):
         r, c, path, seen = q.popleft()
 
-        print(f"{r=} {c=} {path=}")
         for heading in "NESW":
             r2 = r + (heading == "S") - (heading == "N")
             c2 = c + (heading == "E") - (heading == "W")
@@ -386,7 +385,8 @@ for target_ch in target[1:]:
             if fb_grid[r2][c2] == target_ch:
                 q.append((r2, c2, path + heading, seen | {(r2, c2)}))
 
-# # There are multiple paths - maybe it doesn't matter?
+
+# # There are multiple paths
 # for _, _, _, s in q:
 #     print(hash(s))
 #     for r, row in enumerate(fb_grid):
@@ -416,8 +416,54 @@ message += grid2[r][c]
 # # print(message)
 # rememberalwayswhereyouhavebeen
 
-# ???
-# 'bloodflood their brainbox and look twixt their knees'
+
+# Who bloodfloods their brainbox and looks twixt their knees,
+# Beginning wherever, or nearly, they please!
+r, c = 23, 6  # just tried a bunch of starting points until it made sense
+grid3 = walls[2].splitlines()
+message2 = ""
+for heading in path:
+    message2 += grid3[r][c]
+
+    heading = rev[heading]
+
+    r += (heading == "S") - (heading == "N")
+    c += (heading == "E") - (heading == "W")
+message2 += grid3[r][c]
+
+# print(message2)
+# # thelowerzbetokensthedrawbridge
+
+
+# WIP
+walls3 = walls[4].splitlines()
+r = len(walls3) - 1
+c = walls3[r].index("z")
+
+for line in walls3:
+    for ch in line:
+        if ch not in "saydrletmeinimhomethrice":
+            ch = "."
+        print(ch, end="")
+    print()
+
+### TEMP
+target = "saydrletmeinimhomethrice"
+q = collections.deque([(r, c, "", frozenset({(r, c)}))])
+for target_ch in target:
+    for _ in range(len(q)):
+        r, c, path, seen = q.popleft()
+        print(f"{r=} {c=} {path=}")
+
+        for heading in "NESW":
+            r2 = r + (heading == "S") - (heading == "N")
+            c2 = c + (heading == "E") - (heading == "W")
+
+            if not (0 <= r2 < nrows and 0 <= c2 < ncols or (r2, c2) in seen):
+                continue
+
+            if walls3[r2][c2] == target_ch:
+                q.append((r2, c2, path + heading, seen | {(r2, c2)}))
 
 
 @decrypter.decrypter(chapter=78)
