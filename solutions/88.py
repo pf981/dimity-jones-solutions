@@ -37,6 +37,8 @@ print(swap_pairs(text1))
 import collections
 
 poem1 = swap_pairs(text1)
+poem2 = swap_pairs(text2)
+
 collections.Counter(poem1)
 "".join(ch for ch in poem1 if ch.isupper())
 
@@ -165,7 +167,6 @@ print(swap_pairs(text2))
 # 1. It is both capitalised and not meaning capitals are relevant
 # 2. All three mentioned say "in": "in Thee", "thee within", "in Thee".
 
-poem2 = swap_pairs(text2)
 for line in poem2.splitlines():
     print(len(line.split()))
 
@@ -181,4 +182,56 @@ collections.Counter("STBHAWLHABHVTALRACWJLSPTIOMTAAHFSRMTACWJL")
 # Also: wrath, jot, warmth
 @decrypter.decrypter(chapter=87)
 def decrypt(cipher: str) -> str:
-    return pour(cipher)
+    return cipher
+
+
+import re
+
+chapters = []
+for chapter in range(88):
+    with open(f"data/{chapter:02}.chp") as f:
+        chapters.append(f.read())
+
+# page_regex = re.compile('"""\n' + ".{36}\n" * 24 + '"""', re.MULTILINE)
+page_regex = re.compile('"""\n' + "(?:.{10,40}\n){10,50}" + '"""', re.MULTILINE)
+# page_regex = re.compile('"""\n' + ".*\n" + '"""', re.MULTILINE)
+# page_regex = re.compile('"""', re.MULTILINE)
+# page_regex = re.compile('"', re.MULTILINE)
+# page_regex = re.compile(r"\"\"\"\n" + ".*\n" * 24 + r"\"\"\"", re.MULTILINE)
+
+# re.match(r'"""\n1', '"""\n1')
+
+pages = []
+for chapter, chapter_text in enumerate(chapters):
+    if matches := re.findall(page_regex, chapter_text):
+        print(f"--- Chapter {chapter} ---")
+        for match in matches:
+            print(match)
+
+
+# """
+# ;;B.'Ksy.H'!|Pzr'[5;|{swyrP.n.]Jq}uI
+# B[F-zt7}9?}|Bz+q);r7Kms!ozrG1Cz.F[;z
+# ,!A3(oC/:"v(Is-uG?9o$o[Bv9'":s+.?}Cq
+# N}]C'?:BwOo(,E.]Cus:nG1,.A]Kq?*,qB;F
+# ?\s;}GIs%uL:z,/|Bp'4s_A3(oC\s;'GI-):
+# ;Bx9,xxUKqw}w;uw4C]x3:y";['BtPCxA8wn
+# 9'L.G"(C,C;v;7z,Ac"lp|;v,]Jz*AHxq-/q
+# !LKz;Prv;?J}Li7K"s]zBz.7v+AMwvsPvr:G
+# :s/C'uwIs;zs|so\C\V_CzLy3'pC/-:rGE?L
+# ;rnv9,!AB|]C\vn'/q":.N?sC/vrB}1'L;7"
+# wq$xzRKx?%sB'z1,L9":xw\]BW'Es|9s:!C'
+# LrH{9,|C,.wqp=;s!p;/sys%qkx:G1:C("Bn
+# w?"'-yy+qr;:5+?'((rB[FCyqs|ssPwz?(F.
+# /C;"(5z*A3(9?+s.B'Es$A]K"o/C:r:9,.q6
+# n{5Cyq7(9.,,[$GJo*:XK:?PoBs(9s)ps+?u
+# ![:M+wo\s;B.EC|'K[?w/s}B !-+A7=p; "u
+# G.%C8#B'z1"LuL$9t|;BuwIC}q3zp;/vv?%q
+# )P}{{GrDfzs|ssPs.q/qWLmE"z);rB'z5C+q
+# B;z5C)qO.?C[s?'/q":mMK!v;C\p'Lz.AG.'
+# qq[)E\9w}(v'w4C+.s{po:C'u.JC[z7#9O}r
+# A3xz-\Cz[G8-|n3(o*1C(rGFtLoH+?';C.,}
+# 9)-wpuGKv;:s,l-!s'B.JC"qI|9'--'B[8;[
+# ,n:(1";"7"(|Pp":)Kw)ss).s}}BVG4?LzH|
+# ;3z=p7K:v,"}B.EC?m5|]C\vv;GE?%qEKz,]
+# """
