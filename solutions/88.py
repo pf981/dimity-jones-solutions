@@ -132,11 +132,29 @@ print(swap_pairs(text2))
 ["RETRIEVE WH", "ATE'ER YOU ", "LET THIS BY", "LTIPLIED.", "ELP UNHIDE:"]
 # Well, I assume it's saying go back and look at all the torn pages. And then mutiply something?
 
-# RETRIEVEWH
+# Chapter 78 has more snippets!
+# 'THAT BE MU'
+# 'CAST ASIDE'
+# 'WHAT O'ER'
+# 'WROTE'LL' # 'WROTE' -- or 'WROTE'LL', actually, I think ..."
+
+# Chapter 59
+# "And the same thing," Dimity realized, "happened to all the other letters when they got singed in the dining room!" She pulled from her notebook and spelled aloud the other fragments: "CAST ASIDE;"; "WHAT O'ER I"; and " WROTE'LL H".
+
+
+# RETRIEVE WH
 # ATE'ER YOU
+# CAST ASIDE;
+# WHAT O'ER I
+# WROTE'LL H
+# ELP UNHIDE:
 # LET THIS BY
-# HELP UNHIDE:
-# MLTIPLIED
+# THAT BE MU
+# LTIPLIED.
+
+
+# "LTIPLIED." is shorter. So maybe that is the last piece - which makes sense because it ends in period.
+
 
 # # There is no "U"
 # STBHAWLHABHVTALRACWJLSPTIOMTAAFSRTACWJL
