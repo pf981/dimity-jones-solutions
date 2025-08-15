@@ -22,7 +22,10 @@ import decrypter
 #
 
 
-offsets = [(0, 0), (0, -1), (1, -1), (2, 0), (3, 0), (3, -1)]
+# offsets = [(0, 0), (0, -1), (1, -1), (2, 0), (3, 0), (3, -1)] # Middle two seem off
+# offsets = [(0, 0), (0, -1), (2, 0), (1, -1), (3, 0), (3, -1)] # Middle two seem off
+# offsets = [(0, 0), (0, -1), (2, 0), (2, -1), (3, 0), (3, -1)]  # Middle two seem off
+offsets = [(0, 0), (0, -1), (2, -1), (2, 0), (3, 0), (3, -1)]  # Correct
 S_HEIGHT = 4  # height of smallest S
 S_WIDTH = 2  # width of smallest S
 
@@ -34,7 +37,6 @@ def gen_part(depth, part):
         yield dr, dc
     else:
         for r2, c2 in range_positions(depth - 1):
-            # yield dr * depth * S_HEIGHT + r2, dc * depth * S_WIDTH + c2
             scale_r = S_HEIGHT**depth
             scale_c = S_WIDTH**depth
             yield dr * scale_r + r2, dc * scale_c + c2
@@ -80,7 +82,31 @@ def test_super_s(cipher):
         print()
 
 
-# test_super_s("123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" * 10)
+def super_s_test(cipher):
+    result = {}
+    for (r, c), ch in zip(gen_positions_for_cipher(cipher), cipher):
+        result[(r, c)] = ch
+    return result
+
+
+# dec = decrypter.decrypter(chapter=86)(lambda x: x)
+# cipher = dec.decrypt_chapter()
+
+# super_s(cipher)[:100]
+
+# m = super_s_test(cipher)
+# min_r = min(r for r, _ in m)
+# max_r = max(r for r, _ in m)
+# min_c = min(c for _, c in m)
+# max_c = max(c for _, c in m)
+
+# for r in range(10):
+#     for c in range(min_c, max_c):
+#         print(m.get((r, c), "").replace("\n", "#"), end="")
+#     print()
+
+# ...
+# test_super_s("123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" * 30)
 # Gen part depth=0 part=0 dr=0 dc=0
 # r=0 c=0 ch='1'
 # Gen part depth=0 part=1 dr=0 dc=-1
