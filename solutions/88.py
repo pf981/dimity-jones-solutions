@@ -152,6 +152,8 @@ print(swap_pairs(text2))
 # THAT BE MU
 # LTIPLIED.
 
+# "What over I wrote be multiplied" might mean line up the back and front pages and multiply where the numbers intersect letters or something?
+
 
 # "LTIPLIED." is shorter. So maybe that is the last piece - which makes sense because it ends in period.
 
