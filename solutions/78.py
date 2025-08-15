@@ -436,39 +436,37 @@ message2 += grid3[r][c]
 
 
 # WIP
-walls3 = walls[4].splitlines()
-r = len(walls3) - 1
-c = walls3[r].index("z")
+floor = walls[4].splitlines()
+ceiling = [line for line in reversed(walls[5].splitlines())]
 
-for line in walls3:
-    for ch in line:
-        if ch not in "saydrletmeinimhomethrice":
-            ch = "."
-        print(ch, end="")
-    print()
+r = len(floor) - 1
+c = floor[r].index("z")
+side = "D"
+wall = floor
 
-### TEMP
-target = "saydrletmeinimhomethrice"
-q = collections.deque([(r, c, "", frozenset({(r, c)}))])
-for target_ch in target:
-    for _ in range(len(q)):
-        r, c, path, seen = q.popleft()
-        print(f"{r=} {c=} {path=}")
+# path = "NNWSWNNUWNWWDENWWN"
+path = "NNWSWNNUESWWNDWWWNENESUW"
+result = []
+for heading in path:
+    r += (heading == "S") - (heading == "N")
+    c += (heading == "E") - (heading == "W")
 
-        for heading in "NESW":
-            r2 = r + (heading == "S") - (heading == "N")
-            c2 = c + (heading == "E") - (heading == "W")
+    if heading == "U":
+        wall = ceiling
+    elif heading == "D":
+        wall = floor
 
-            if not (0 <= r2 < nrows and 0 <= c2 < ncols or (r2, c2) in seen):
-                continue
+    print(f"{heading=} {r=} {c=} {wall[r][c]=}")
 
-            if walls3[r2][c2] == target_ch:
-                q.append((r2, c2, path + heading, seen | {(r2, c2)}))
+    result.append(wall[r][c])
+
+key = "".join(result)
+# key = "saydrletmeinimhomethrice"
 
 
 @decrypter.decrypter(chapter=78)
 def decrypt(cipher: str) -> str:
-    return decrypter.vigenere_cipher(cipher, "saydrletmeinimhomethrice")
+    return decrypter.vigenere_cipher(cipher, key)
 
 
 # import itertools
