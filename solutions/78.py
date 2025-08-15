@@ -457,8 +457,6 @@ for heading in path:
     elif heading == "D":
         wall = floor
 
-    print(f"{heading=} {r=} {c=} {wall[r][c]=}")
-
     result.append(wall[r][c])
 
 key = "".join(result)
