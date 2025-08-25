@@ -1,3 +1,5 @@
+import collections
+
 import decrypter
 
 
@@ -26,7 +28,13 @@ khTtaa llt ih simhg tsaw le lebw ir tniI kn
 roa  shS eeRda,ss ehM kaset ehw rosdi  nhTee
 .    --bAarah moClwye ,W"irttnei  nuJci efoL meom"n."""
 
-print(swap_pairs(text1))
+poem1 = swap_pairs(text1)
+poem2 = swap_pairs(text2)
+
+len(poem1.splitlines())
+len(poem2.splitlines())
+
+print(poem1)
 # So, nothing yet in Thee is seene,
 # But soon as genial Heat warms thee within,
 # A new-born Wood of various Lines there grows;
@@ -34,10 +42,15 @@ print(swap_pairs(text1))
 # Here sprouts a V, and there a T,
 # And all the flourishing Letters stand in Rows.
 #     --Abraham Cowley, "Written in Juice of Lemmon".
-import collections
 
-poem1 = swap_pairs(text1)
-poem2 = swap_pairs(text2)
+print(poem2)
+# Still, seely Paper, thou wilt think
+# That all this might as well be writ in Ink.
+# Oh no; there's sense in this, and Mysterie;
+# Thou now maist change thy Authors name,
+# And to her Hand lay noble claim;
+# For as She Reads, she Makes the words in Thee.
+#     --Abraham Cowley, "Written in Juice of Lemmon".
 
 collections.Counter(poem1)
 "".join(ch for ch in poem1 if ch.isupper())
@@ -63,6 +76,12 @@ for line in poem1.splitlines():
 
 counts1 = collections.Counter(c for c in poem1 if c.isupper())
 counts2 = collections.Counter(c for c in poem2 if c.isupper())
+
+sum(counts1.values())  # 21
+sum(counts2.values())  # 20
+
+set(counts1).intersection(counts2)
+
 # FROM
 # Mogh - there is no g
 
@@ -78,13 +97,13 @@ for line in poem2.splitlines():
 # ACWJL
 
 # - Concatenate
-#     STSP
-#     BHTI
-#    AWLOM
-#    HABTA
-#    HVTAH
-#   ALRFSRMT
-#  ACWJLACWJL
+#     ST SP
+#     BH TI
+#    AWL OM
+#    HAB TA
+#    HVT AH
+#   ALRF SRMT
+#  ACWJL ACWJL
 
 
 # - Invert second
@@ -154,7 +173,22 @@ print(swap_pairs(text2))
 # THAT BE MU
 # LTIPLIED.
 
+text3 = """RETRIEVE WH
+ATE'ER YOU
+CAST ASIDE;
+WHAT O'ER I
+WROTE'LL H
+ELP UNHIDE:
+LET THIS BY
+THAT BE MU
+LTIPLIED."""
+
+letters = "".join(c for c in text3 if c.isupper())
+len(letters)  # 77
 # "What over I wrote be multiplied" might mean line up the back and front pages and multiply where the numbers intersect letters or something?
+[len(line) for line in text3.splitlines()]
+# [11, 10, 11, 11, 10, 11, 11, 10, 9]
+# There are 9 lines
 
 
 # "LTIPLIED." is shorter. So maybe that is the last piece - which makes sense because it ends in period.
@@ -201,7 +235,6 @@ page_regex = re.compile('"""\n' + "(?:.{10,40}\n){10,50}" + '"""', re.MULTILINE)
 
 # re.match(r'"""\n1', '"""\n1')
 
-pages = []
 for chapter, chapter_text in enumerate(chapters):
     if chapter in [77, 78]:
         continue
@@ -209,7 +242,7 @@ for chapter, chapter_text in enumerate(chapters):
         print(f"--- Chapter {chapter} ---")
         for match in matches:
             print(match)
-[
+pages = [
     # --- Chapter 12 ---
     (
         r"""
@@ -483,3 +516,44 @@ w.t!PC[n8+!q,",:+q.[p7$9o/C'usKC|;H
         "",
     ),
 ]
+
+
+len(pages)  # 9 - so clearly a 3x3 grid
+# grid = ["" * 3 for _ in range(3)]
+
+for i, (page, rips) in enumerate(pages):
+    print(i, rips)
+
+grid_indexes = [
+    [2, "", ""],
+    [6, 0, 1],
+    [4, "", 5],
+]
+
+# 3, 7, 8
+# Just put them anywhere for now
+grid_indexes = [
+    [2, 3, 7],
+    [6, 0, 1],
+    [4, 8, 5],
+]
+
+grid = []
+for row_indexes in grid_indexes:
+    lines_list = [pages[i][0].strip().splitlines() for i in row_indexes]
+    print(lines_list)
+    grid.append("\n".join("".join(line) for line in zip(*lines_list)))
+
+combined = "\n".join(grid)
+with open("data/88_pages.txt", "w") as f:
+    f.write(combined)
+
+
+combined_counts = collections.Counter(combined)
+combined_counts
+
+"".join(sorted(combined_counts))
+# This uses all characters!
+
+len(combined.splitlines())  # 70
+len(combined.splitlines()[0])  # 107
