@@ -209,7 +209,7 @@ for chapter, chapter_text in enumerate(chapters):
         print(f"--- Chapter {chapter} ---")
         for match in matches:
             print(match)
-[
+mats = [
     # --- Chapter 12 ---
     (
         r"""
@@ -483,3 +483,34 @@ w.t!PC[n8+!q,",:+q.[p7$9o/C'usKC|;H
         "",
     ),
 ]
+
+[block.strip() for block, _ in mats]
+
+
+## WIP: Butterflies
+# CLEARLY each color is a letter, each comma is a space
+#
+# This is when they first saw: It has 26 colors.
+# They found themselves in a glass-domed atrium whose high, bright airspace was aflutter with hundreds of butterflies of various resplendent colors: gold, xanthene, wine, turquoise, mauve, silver, plum, violet, heliotrope, ultramarine, navy, smoky quartz, yellow, kiwi, jet, orange, zucchini, copper, ruby, azure, lavender, burgundy, indigo, emerald, daffodil, and fuchsia. At the appearance of the puzzlers, they wafted over and swarmed around them in ever-shifting clouds, in which, however, certain patterns were seen to reappear again and again: violet gold silver silver yellow, for example, and navy gold silver ultramarine yellow xanthene gold.
+
+
+txt = """Still, sleep, Player, without think That all this might was well be writ in Ink. Oh no; there's sense in this, and Mystery; Thou now must change the Author's name, And to Her and lad only be claim; For She Reads, She Makes the words in Thee. . --Abraham Cowley, "Written in Juice of Lemon"."""
+
+plain = """tSli,ls eeylP pare ,htuow li thtni
+khTtaa llt ih simhg tsaw le lebw ir tniI kn
+.hOn ;ot ehers's neesi nhtsi ,na dyMtsreei
+;hTuon wom iatsc ahgn eht yuAhtro sanem
+,nA doth reH na dal yonlb elcia;mF
+roa shS eeRda,ss ehM kaset ehw rosdi nhTee
+. --bAarah moClwye ,W"irttnei nuJci efoL meom"n."""
+
+# swap_pairs(plain)
+
+
+# poem1
+# hashlib.file_digest(f, "sha256").hexdigest()
+
+# import hashlib
+
+# hashlib.sha256(poem1.encode()).hexdigest()
+# hashlib.sha256(swap_pairs(plain).encode()).hexdigest()
