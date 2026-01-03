@@ -1,13 +1,9 @@
+import itertools
+
 import decrypter
 
 
-# The 9 raw ciphertext blocks organized by their position in the 3x3 grid
-# Row 1: Top-Left, Top-Center, Top-Right
-# Row 2: Mid-Left, Center, Mid-Right
-# Row 3: Bot-Left, Bot-Center, Bot-Right
-
 BLOCKS_RAW = {
-    # --- Row 1 (23 lines high) ---
     "TR": r"""Nzos}z[Bx9(,AR.l;/Cnt'RCqtB}9w/C.,[q
 '"w-v;7'K{s[;p]w;uw4C-mL|9];o:B]Er,!
 :,s3vxnE.]C,,qB"5;|.GwwC|tBuwIC(mC)?
@@ -222,37 +218,95 @@ M:'sP'puw4--qsyl,PprBxF-)psw:C|p.n?N
 v.yqw)AH{os%C',G2sLm4"pC\?Br;A?*A3(o""",
 }
 
-# Define the Grid Structure
 grid_structure = [["TL", "TC", "TR"], ["ML", "Center", "MR"], ["BL", "BC", "BR"]]
 
-final_tapestry_lines = []
+combined = []
 
 for row_keys in grid_structure:
-    # Get the raw text for each block in this row
     row_blocks = [BLOCKS_RAW[key].strip().splitlines() for key in row_keys]
 
-    # Check heights
     heights = [len(b) for b in row_blocks]
     max_height = max(heights)
 
-    # Stitch lines
     for i in range(max_height):
         stitched_line = ""
         for block in row_blocks:
             if i < len(block):
                 stitched_line += block[i]
             else:
-                # Should not happen if grid logic is correct
                 raise ValueError("Incorrect grid logic")
-        final_tapestry_lines.append(stitched_line)
+        combined.append(stitched_line)
 
-with open("data/87a.txt", "w") as file_object:
-    file_object.write("\n".join(final_tapestry_lines))
+with open("data/87a.txt", "w") as f:
+    f.write("\n".join(combined))
+
+
+def multiplication_cipher(cipher: str, key: str) -> str:
+    alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+    n = len(alphabet)
+    result = []
+    for a, b in zip(cipher, itertools.cycle(key)):
+        result.append(alphabet[(alphabet.index(a) * alphabet.index(b)) % n])
+    return "".join(result)
+
+
+def sequence_shuffle_leftovers(
+    cipher: str, sequence: list[int], chunk_size: int | None = None
+):
+    if chunk_size is None:
+        chunk_size = max(sequence)
+
+    sequence = [i for i in range(1, chunk_size + 1) if i not in sequence]
+
+    result: list[str] = []
+    for buffer in itertools.batched(cipher, chunk_size):
+        if len(buffer) < chunk_size:
+            # This line needed to be removed
+            # result.extend(buffer)
+            break
+        for i in sequence:
+            result.append(buffer[i - 1])
+
+    return "".join(result)
+
+
+@decrypter.decrypter(chapter=4)
+def p4(cipher: str) -> str:
+    return sequence_shuffle_leftovers(cipher, [3, 2, 1, 7, 6, 5], 8)
+
+
+@decrypter.decrypter(chapter=6)
+def p6(cipher: str) -> str:
+    return sequence_shuffle_leftovers(cipher, [2, 9, 1, 5, 8, 4, 6])
+
+
+@decrypter.decrypter(chapter=7)
+def p7(cipher: str) -> str:
+    return sequence_shuffle_leftovers(cipher, [6, 4, 2, 1, 7])
+
+
+@decrypter.decrypter(chapter=8)
+def p8(cipher: str) -> str:
+    return sequence_shuffle_leftovers(cipher, [2, 11, 8, 1, 10, 9, 3, 6])
+
+
+@decrypter.decrypter(chapter=9)
+def p9(cipher: str) -> str:
+    return sequence_shuffle_leftovers(cipher, [4, 1, 2, 5, 3, 6, 12, 7, 11, 10])
+
+
+ciphertext = (
+    p4.decrypt_chapter()
+    + p6.decrypt_chapter()
+    + p7.decrypt_chapter()
+    + p8.decrypt_chapter()
+    + p9.decrypt_chapter()
+)
 
 
 @decrypter.decrypter(chapter=88, has_chapter_separator=False)
-def decrypt(cipher: str) -> str:
-    return cipher
+def decrypt(key: str) -> str:
+    return multiplication_cipher(ciphertext, key.replace("\n", ""))
 
 
 decrypt.input_file = "87a.txt"

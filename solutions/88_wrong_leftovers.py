@@ -1,3 +1,8 @@
+import itertools
+
+import decrypter
+
+
 # The 9 raw ciphertext blocks organized by their position in the 3x3 grid
 # Row 1: Top-Left, Top-Center, Top-Right
 # Row 2: Mid-Left, Center, Mid-Right
@@ -243,8 +248,275 @@ for row_keys in grid_structure:
                 raise ValueError("Incorrect grid logic")
         final_tapestry_lines.append(stitched_line)
 
-# # Print the final raw tapestry
-# print("\n".join(final_tapestry_lines))
-
 with open("data/87a.txt", "w") as file_object:
     file_object.write("\n".join(final_tapestry_lines))
+
+# This is an afterword, in every sense of that term. If by chance you are reading this before having deciphered, and then laboriously reconstructed, the "Letter To Your Stupid, Callous, Frustrating, Depressing Depressed Husband", please do so now. (And if you're stumped by that penultimate ciphertext, I will, at the risk of spoiling your fun, be explicit: You must take this afterword in its original, enciphered form and multiply it, one character at a time, and looped as many times as necessary, by the extraneous characters you "cast aside" when unrearranging some of the early transposition ciphers -- namely, the fourth and sixth through ninth ciphertexts. Where the result is higher than 88, of course, divide by 89, the length of our alphabet, and take the remainder.)
+
+
+# Chapter 4:
+# M O C L N I E T
+# Used: "COMEIN"
+# Cast aside: "LT"
+#
+# Chapter 6:
+# DED, RE NOT NEE, and THESE A
+#
+# Chapter 7:
+# Chapter 8:
+# Chapter 9:
+
+
+m = {}
+
+# 4:  ([3, 2, 1, 7, 6, 5], 8) -> 48
+#       moclniet -> LT or lt
+m[4] = ["L", "T"]
+
+# 6: [2, 9, 1, 5, 8, 4, 6] ->37
+# "DED"
+# "RE NOT NEE"
+# "AYS W"
+# "HERE YOU"
+# " HAV"
+# "MEMBER AL"
+# "W"
+# "RE"
+# "THESE A"
+# "E BEEN"
+m[6] = ["THESE A", "RE NOT NEE", "DED"]
+
+# 7: [6, 4, 2, 1, 7] ->358
+# """
+# "we" (7)
+# "ing" (4)
+# "ors " (14)
+# "visit" (6)
+# "with a" (1)
+# "nswers should not be made to wait if visit" (15)
+# "lcome at all times in the castle when puzzl" (11)
+# " persons who see doctor mogh will likely regret be" (8)
+# "in lieu of a dog any cat or domesticated pet will s" (3)
+# "if doctor mogh agrees to see us we hereby solemnly s" (5)
+# "s to doctor mogh are welcome as long as every visitor " (10)
+# "ar that we will obey all posted and unposted rules that " (12)
+# "ppropriate precautions every person shall have a wonderful " (13)
+# " puzzlers who meet doctor mogh should always remember to greet her " (2)
+# "alth rewards the swiftest and the daring, but beauty will enrich who does the star" (9)
+# """
+m[7] = [
+    "ors ",
+    "nswers should not be made to wait if visit",
+    "lcome at all times in the castle when puzzl",
+    " persons who see doctor mogh will likely regret be",
+    "in lieu of a dog any cat or domesticated pet will s",
+    "if doctor mogh agrees to see us we hereby solemnly s",
+    "s to doctor mogh are welcome as long as every visitor ",
+    "ar that we will obey all posted and unposted rules that ",
+    "ppropriate precautions every person shall have a wonderful ",
+    "alth rewards the swiftest and the daring, but beauty will enrich who does the star",
+]
+
+# The punctuation is omitted
+# "if doctor mogh agrees to see us we hereby solemnly s"
+# (w)
+# "ar that we will obey all posted and unposted rules that "
+
+# "s to doctor mogh are welcome as long as every visitor "
+# (takes a)
+# "ppropriate precautions every person shall have a wonderful "
+
+# "nswers should not be made to wait if visit"
+# "ors "
+# "lcome at all times in the castle when puzzl"
+# " persons who see doctor mogh will likely regret be"
+# "in lieu of a dog any cat or domesticated pet will s"
+# (uffice)
+# "alth rewards the swiftest and the daring, but beauty will enrich who does the star"
+
+# 8: [2, 11, 8, 1, 10, 9, 3, 6] -> 457
+# nums = [
+#     2095,
+#     845,
+#     8673,
+#     3547,
+#     8478,
+#     8780,
+#     4695,
+#     1987,
+#     3114,
+#     2335,
+#     1461,
+#     2698,
+#     6850,
+#     4556,
+#     6976,
+#     3021,
+#     5441,
+#     5657,
+#     7737,
+#     5780,
+# ]
+# [num for i, num in enumerate(nums, 1) if i not in [2, 11, 8, 1, 10, 9, 3, 6]]
+m[8] = [3547, 8478, 4695, 2698, 6850, 4556, 6976, 3021, 5441, 5657, 7737, 5780]
+# assert sum(nums) - sum(m[8]) == 29290
+# "".join(alphabet[num % n] for num in m[8])
+# "".join("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[num % 26] for num in m[8])
+# ''.join("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[int(i)] for i in '3547')
+# ''.join("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[int(i)] for i in '8478')
+# ''.join("ABCDEFGHIJKLMNOPQRSTUVWXYZ"[int(i)] for i in '4695')
+# ...
+
+# 9: [4, 1, 2, 5, 3, 6, 12, 7, 11, 10] -> 89
+m[9] = ["them", "them"]
+
+# key = "483735845789"
+# key = [int(k) for k in key]
+# ciphertext = "".join(final_tapestry_lines)
+
+
+# def multiplication_cipher(cipher: str, key: list[int]) -> str:
+#     alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+#     n = len(alphabet)
+#     result = []
+#     for a, k in zip(cipher, itertools.cycle(key)):
+#         result.append(alphabet[(alphabet.index(a) * k) % n])
+#     return "".join(result)
+
+
+# multiplication_cipher(ciphertext, key)
+
+sum([len(v) for v in m.values()])
+
+
+# 0 or 1 index?
+# result.append(
+#     alphabet[((alphabet.index(a) + 1) * (alphabet.index(b) + 1) - 1) % n + 1]
+# )
+def multiplication_cipher(cipher: str, key: str) -> str:
+    alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+    n = len(alphabet)
+    result = []
+    for a, b in zip(cipher, itertools.cycle(key)):
+        result.append(alphabet[(alphabet.index(a) * alphabet.index(b)) % n])
+        # result.append(alphabet[(alphabet.index(a) + 1) * (alphabet.index(b) + 1) % n])
+        # result.append(
+        #     alphabet[((alphabet.index(a) + 1) * (alphabet.index(b) + 1) - 1) % n]
+        # )
+    return "".join(result)
+
+
+@decrypter.decrypter(chapter=88, has_chapter_separator=False)
+def decrypt(cipher: str) -> str:
+    # return multiplication_cipher(cipher, "lt")
+    return multiplication_cipher(cipher, "LT")
+
+
+decrypt.input_file = "87a.txt"
+
+
+cipher = "".join(final_tapestry_lines)
+# key = "LT"
+# key = "NT"
+# key = "MOCLNIET".lower()
+key = m[4] + m[6]
+alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+n = len(alphabet)
+
+
+result = []
+for a, b in zip(cipher, itertools.cycle(key)):
+    result.append(alphabet[(alphabet.index(a) * alphabet.index(b)) % n])
+    # result.append(alphabet[(alphabet.index(a) + 1) * (alphabet.index(b) + 1) % n])
+    # result.append(
+    #     alphabet[((alphabet.index(a) + 1) * (alphabet.index(b) + 1) - 1) % n]
+    # )
+print("".join(result))
+
+
+alphabet[(4 * alphabet.index(cipher[0])) % n]
+alphabet[(8 * alphabet.index(cipher[1])) % n]
+alphabet[(3 * alphabet.index(cipher[2])) % n]
+alphabet[(7 * alphabet.index(cipher[3])) % n]
+alphabet[(3 * alphabet.index(cipher[4])) % n]
+alphabet[(5 * alphabet.index(cipher[5])) % n]
+
+j = alphabet.index(cipher[0])
+alphabet[(7 * j) % n]
+alphabet[(6 * alphabet.index(cipher[1])) % n]
+alphabet[(5 * alphabet.index(cipher[2])) % n]
+
+alphabet[(5 * j) % n]
+alphabet[(4 * j) % n]
+alphabet[(8 * j) % n]
+p = set()
+for i in range(n):
+    c = alphabet[(i * j) % n]
+    # if c.isupper():
+    print(alphabet[i], c)
+# print("".join(sorted(p)))
+
+# 0 -> L
+
+
+for i in range(n):
+    j = alphabet.index(cipher[0]) + 1
+    c = alphabet[(i * j) % n]
+    if c == "L":
+        print(alphabet[i], c)
+# T
+
+for i in range(n):
+    j = alphabet.index(cipher[0]) + 1
+    c = alphabet[(i * j) % n]
+    if c == "e":
+        print(alphabet[i], c)
+# p
+
+n = len(alphabet)
+
+j = alphabet.index(cipher[1])
+p = set()
+for i in range(n):
+    c = alphabet[(i * j) % n]
+    if c.islower():
+        print(alphabet[i], c)
+
+result = []
+for a, b in zip(cipher, itertools.cycle(key)):
+    result.append(alphabet[(alphabet.index(a) * alphabet.index(b)) % n])
+    # result.append(alphabet[(alphabet.index(a) + 1) * (alphabet.index(b) + 1) % n])
+    # result.append(
+    #     alphabet[((alphabet.index(a) + 1) * (alphabet.index(b) + 1) - 1) % n]
+    # )
+print("".join(result))
+
+
+# The tapestry has no 0s. So maybe we need the inverse?
+inv_table = {}
+for i in range(1, n):
+    inv_table[i] = pow(i, -1, n)
+
+alphabet = """0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'"-()[]{}|+=%/\\*#$_ \n"""
+n = len(alphabet)
+
+for i in range(1, n):
+    j = alphabet.index(cipher[0])
+    i_inv = inv_table[i]
+    c = alphabet[(i * j) % n]
+    # if c == "L":
+    print(alphabet[i], c)
+
+
+for i in range(1, n):
+    j = alphabet.index(cipher[1])
+    i_inv = inv_table[i]
+    c = alphabet[(i * j) % n]
+    # if c == "L":
+    print(alphabet[i], c)
+
+
+# Is it the puzzle POSED in chapter 4.chp or solved in 4.chp?
+# The puzzle posed in 7.chp / answered in 8.chp is just numbers?
+# "4" has to mean my 04.py because 03.py and 05.py don't have leftover characters
+# So it must be the puzzle ANSWERED in 4.chp and asked in 3.chp
