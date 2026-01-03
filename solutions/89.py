@@ -281,7 +281,7 @@ def decrypt_additive(ciphertext: str, key: str) -> str:
 # print(decrypt_additive(ciphertext, key))
 
 
-@decrypter.decrypter(chapter=88)
+@decrypter.decrypter(chapter=89)
 def decrypt(
     _: str,
 ) -> str:  # Just ignore cipher input as input doesn't come from chapter
