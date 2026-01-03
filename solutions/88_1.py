@@ -5,7 +5,7 @@
 
 BLOCKS_RAW = {
     # --- Row 1 (23 lines high) ---
-    "TL": r"""Nzos}z[Bx9(,AR.l;/Cnt'RCqtB}9w/C.,[q
+    "TR": r"""Nzos}z[Bx9(,AR.l;/Cnt'RCqtB}9w/C.,[q
 '"w-v;7'K{s[;p]w;uw4C-mL|9];o:B]Er,!
 :,s3vxnE.]C,,qB"5;|.GwwC|tBuwIC(mC)?
 Lu:AB(9o}Cns[5;).H(]C,,qBv5']uM.9. C
@@ -51,7 +51,7 @@ L';.G}9v,(rBt5s)A8."|P.v.'I|LmGz9'\
 AM!l"P.nq/q.x'Gzp;(,tB!5"+qKK:?P.r{
 pCq-]]!5CZmL|wsP'',(P}LaGK:v;C,'z5;
 w.t!PC[n8+!q,",:+q.[p7$9o/C'usKC|;H""",
-    "TR": r"""CePC/u8.]C7co.sB)x/UK:v;Cn"[8?}AH,9"
+    "TL": r"""CePC/u8.]C7co.sB)x/UK:v;Cn"[8?}AH,9"
 ":qs"l'\C'u.EuL:A.9)%?'rGZ#L;Aw:C:w;
 spp;,CX..7v+!Hwo\/CqrxKC,pB|z;/vv?GZ
 C$?:x)RCf;s:!C,z;,/qo|AM!pC|,y[GE?%q
@@ -75,7 +75,7 @@ nw/w,.GNo|AP!p"-s:B'IC).MK:?Pw.p!Lr,
 s;;wE";mEKz;Ps-r;q,x;N{lzP!n:[q??AM!
 [8sL:3-pC\wzr/qo)ps:yC\vrB)1.,A7(:w!""",
     # --- Row 2 (24 lines high) ---
-    "ML": r""";;B.'Ksy.H'!|Pzr'[5;|{swyrP.n.]Jq}uI
+    "MR": r""";;B.'Ksy.H'!|Pzr'[5;|{swyrP.n.]Jq}uI
 B[F-zt7}9?}|Bz+q);r7Kms!ozrG1Cz.F[;z
 ,!A3(oC/:"v(Is-uG?9o$o[Bv9'":s+.?}Cq
 N}]C'?:BwOo(,E.]Cus:nG1,.A]Kq?*,qB;F
@@ -123,7 +123,7 @@ z C?:'6s|:7}]C7WBq'E\+APwy"P",B[1z"
 ;{G),.q7z]C("Bv)q":qs|tu-".r)JC/uM!
 9,|AcwyrPrrzsEr|#s::'Ptv.sCz*{s[z'\
 x83t.+?:'sEq,AM!l"Pvn;GCs.AF.9"|Cp,""",
-    "MR": r"""|;s);"/wqrG9"|A7(nw+vr::5,++sWq";;B'
+    "ML": r"""|;s);"/wqrG9"|A7(nw+vr::5,++sWq";;B'
 |!C,z,.yq);;AK:v;Czn)Jw%qs(z(;zB;z5C
 /w-rG1;ztB=t'\|Br:1w-uG?9v;;;r!6C:qK
 v)B'L.8Kmo!y"?)q??A7=p; Cz,v9t;o3|t?
@@ -148,7 +148,7 @@ qs\,7y:C,,qBsNo;;s,;;\vr:G4w|oE)!-%s
 '9!9"-sB:wJ"L.8K:v;C;''I]L;Aw:C;[?ys
 9"-w.xG9"LuLKl, Cxv;4C[rs[p;#s:;wq',""",
     # --- Row 3 (23 lines high) ---
-    "BL": r"""+qLKlC#o;'/qw);K:no\sy[G2?[nR|?o+!rq
+    "BR": r"""+qLKlC#o;'/qw);K:no\sy[G2?[nR|?o+!rq
 :rv\s,")SC.!N(vs}Cwr(5.;m6#9h-sBr{5;
 -?"yvq,[;UKn?*zqB;F"_A]Kqs]"}Bt5C.qI
 ?!1q,{swyrP"ur(5C;:s(z"P"urGJ!xo7K\o
@@ -194,7 +194,7 @@ P.npz9,x;B)y'P?sB!9",!3{(C,ur.[qP}m
 o$.3\3v{r"nv7]$AtLev|-tuG?;.)UKy?$C
 LKz,Pw.BtCw+t7Kn?{!"'wIC;xE::s%op[/
 C\?Bo(9,!AM)9z(uu'GKv;:s|p[\}BCH*vx""",
-    "BR": r"""]Bs.Er|AB|!C%sn;'EC?.KKms(,tB.EC+t3|
+    "BL": r"""]Bs.Er|AB|!C%sn;'EC?.KKms(,tB.EC+t3|
 GK?(ns:yC$vvpzq.*AP:qsPw.'wEr,ps(z"P
 *.G.9t|;B(zF.L:A.9)%?'rG5(,!R|sw}u}B
 {t(;rB,xq":uLKwo/"B''Lq:uG?]C,,t".Jv
@@ -240,11 +240,11 @@ for row_keys in grid_structure:
                 stitched_line += block[i]
             else:
                 # Should not happen if grid logic is correct
-                pass
+                raise ValueError("Incorrect grid logic")
         final_tapestry_lines.append(stitched_line)
 
 # # Print the final raw tapestry
 # print("\n".join(final_tapestry_lines))
 
-with open("data/88_tapestry.txt", "w") as file_object:
+with open("data/87a.txt", "w") as file_object:
     file_object.write("\n".join(final_tapestry_lines))
