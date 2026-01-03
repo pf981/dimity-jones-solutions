@@ -246,47 +246,13 @@ for row_keys in grid_structure:
                 raise ValueError("Incorrect grid logic")
         final_tapestry_lines.append(stitched_line)
 
-# # Print the final raw tapestry
-# print("\n".join(final_tapestry_lines))
-
-# with open("data/87a.txt", "w") as file_object:
-#     file_object.write("\n".join(final_tapestry_lines))
+with open("data/87a.txt", "w") as file_object:
+    file_object.write("\n".join(final_tapestry_lines))
 
 
-ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,?!:;'\"-()[]{}|+=%/\\*#$_ \n"
-ALPHABET_IDX = {c: i for i, c in enumerate(ALPHABET)}
-
-# ciphertext = open("data/88_pages.txt").read()
-ciphertext = open("data/88_tapestry.txt").read()
-ciphertext = "\n".join(final_tapestry_lines)
-key = "DIsENCuMBERED"
+@decrypter.decrypter(chapter=88, has_chapter_separator=False)
+def decrypt(cipher: str) -> str:
+    return cipher
 
 
-def decrypt_additive(ciphertext: str, key: str) -> str:
-    result = []
-    i = 0
-    for c in ciphertext:
-        if c == "\n":
-            # result.append("\n")
-            pass
-        else:
-            c_idx = ALPHABET_IDX[c]
-            k_idx = ALPHABET_IDX[key[i % len(key)]]
-            p_idx = (c_idx - k_idx) % 89
-            result.append(ALPHABET[p_idx])
-            i += 1
-    return "".join(result)
-
-
-# print(decrypt_additive(ciphertext, key))
-
-
-@decrypter.decrypter(chapter=88)
-def decrypt(
-    _: str,
-) -> str:  # Just ignore cipher input as input doesn't come from chapter
-    return decrypt_additive(ciphertext, key)
-
-
-# Hacky patch for now
-decrypt.decrypt_chapter = lambda: decrypt(ciphertext)
+decrypt.input_file = "87a.txt"

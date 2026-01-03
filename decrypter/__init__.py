@@ -4,18 +4,26 @@ from pathlib import Path
 
 
 class Decrypter:
-    def __init__(self, func: Callable[[str], str], chapter: int, path: str):
+    def __init__(
+        self,
+        func: Callable[[str], str],
+        chapter: int,
+        has_chapter_separator: bool,
+        path: str,
+    ):
         self.func = func
         self.chapter = chapter
         self.prev_chapter = max(chapter - 1, 0)
+        self.has_chapter_separator = has_chapter_separator
         self.path = Path(path)
+        self.input_file = f"{self.prev_chapter:02}.txt"
 
     def __call__(self, cipher: str) -> str:
         return self._decrypt(cipher)
 
     def decrypt_chapter(self) -> str:
-        cipher = self._read_file(f"{self.prev_chapter:02}.txt")
-        if self.chapter:
+        cipher = self._read_file(self.input_file)
+        if self.has_chapter_separator:
             cipher = cipher.split("#####", 1)[1]
         return self._decrypt(cipher)
 
@@ -64,10 +72,10 @@ class Decrypter:
 
 
 def decrypter(
-    chapter: int, path: str = "./data/"
+    chapter: int, has_chapter_separator: bool = True, path: str = "./data/"
 ) -> Callable[[Callable[[str], str]], Decrypter]:
     def decorator(func: Callable[[str], str]) -> Decrypter:
-        return Decrypter(func, chapter, path)
+        return Decrypter(func, chapter, has_chapter_separator, path)
 
     return decorator
 
