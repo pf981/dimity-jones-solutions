@@ -17,34 +17,34 @@ def pop_prefix(regex: str, s: str) -> tuple[str, str] | None:
     return None
 
 
-def pop_word(s: str) -> tuple[str, str] | None:
-    if match := pop_prefix('".+?"', rest):
+def pop_word(s: str) -> tuple[str, str]:
+    if match := pop_prefix('".+?"', s):
         return match[0].strip('"'), match[1]
-    elif match := pop_prefix("(a |the )?comma", rest):
+    elif match := pop_prefix("(a |the )?comma", s):
         return ",", match[1]
-    elif match := pop_prefix("(a |the )?colon", rest):
+    elif match := pop_prefix("(a |the )?colon", s):
         return ":", match[1]
-    elif match := pop_prefix("(a |the )?period", rest):
+    elif match := pop_prefix("(a |the )?period", s):
         return ".", match[1]
-    elif match := pop_prefix("(a |the )?line break", rest):
+    elif match := pop_prefix("(a |the )?line break", s):
         return "\n", match[1]
-    elif match := pop_prefix("(a |the )?question mark", rest):
+    elif match := pop_prefix("(a |the )?question mark", s):
         return "?", match[1]
-    elif match := pop_prefix("(a |the )?dash", rest):
+    elif match := pop_prefix("(a |the )?dash", s):
         return "-", match[1]
-    elif match := pop_prefix("(a |the )?quotation mark", rest):
+    elif match := pop_prefix("(a |the )?quotation mark", s):
         return '"', match[1]
-    elif match := pop_prefix("(a |the )?semicolon", rest):
+    elif match := pop_prefix("(a |the )?semicolon", s):
         return ";", match[1]
-    elif match := pop_prefix("(a |the )?close parenthesis", rest):
+    elif match := pop_prefix("(a |the )?close parenthesis", s):
         return ")", match[1]
-    elif match := pop_prefix("(an |the )?open parenthesis", rest):
+    elif match := pop_prefix("(an |the )?open parenthesis", s):
         return "(", match[1]
-    elif match := pop_prefix("(an |the )?exclamation mark", rest):
+    elif match := pop_prefix("(an |the )?exclamation mark", s):
         return "!", match[1]
     else:
-        # raise ValueError(f"Cannot pop word {s=}")
-        return None
+        raise ValueError(f"Cannot pop word {s=}")
+        # return None
 
 
 def ordinal_words_upto(n: int) -> list[str]:
@@ -143,56 +143,49 @@ def pop_position(s: str) -> tuple[int, str]:
     raise ValueError(f"Cannot pop position {s=}")
 
 
+def pop_positional_word(s: str) -> tuple[int, str, str]:
+    rest = s
+    position = 0
+    try:
+        word, rest = pop_word(rest)
+    except ValueError:
+        position, rest = pop_position(rest)
+        word, rest = pop_word(rest)
+    return position, word, rest
+
+
 for instruction in instructions:
     try:
         rest = instruction
         if match := pop_prefix("Write ", rest):
             rest = match[1]
-            to_insert, rest = pop_word(rest)  # ty:ignore[not-iterable]
+            to_insert, rest = pop_word(rest)
 
             if match := pop_prefix("before ", rest):
                 rest = match[1]
-                if word_first := pop_word(rest):
-                    before, rest = word_first
-                else:
-                    position_before, rest = pop_position(rest)
-                    before, rest = pop_word(rest)  # ty:ignore[not-iterable]
+                position_before, before, rest = pop_positional_word(rest)
                 assert rest == "."
 
             elif match := pop_prefix("after ", rest):
                 rest = match[1]
-                if word_first := pop_word(rest):
-                    after, rest = word_first
-                else:
-                    position_after, rest = pop_position(rest)
-                    after, rest = pop_word(rest)  # ty:ignore[not-iterable]
+                position_after, after, rest = pop_positional_word(rest)
                 assert rest == "."
 
             elif match := pop_prefix("between ", rest):
                 rest = match[1]
-                if word_first := pop_word(rest):
-                    before, rest = word_first
-                    if before == "the period":
-                        print("!")
-                else:
-                    position_before, rest = pop_position(rest)
-                    before, rest = pop_word(rest)  # ty:ignore[not-iterable]
-
+                position_before, before, rest = pop_positional_word(rest)
                 _, rest = pop_prefix("and ", rest)  # ty:ignore[not-iterable]
-
-                # After
-                if word_first := pop_word(rest):
-                    before, rest = word_first
-                else:
-                    position_after, rest = pop_position(rest)
-                    after, rest = pop_word(rest)  # ty:ignore[not-iterable]
-
+                position_after, after, rest = pop_positional_word(rest)
                 assert rest == "."
             else:
                 raise ValueError(f"{rest=}")
 
         elif match := pop_prefix("On second thought, delete ", rest):
             rest = match[1]
+            position_del, word_del, rest = pop_positional_word(rest)
+            _, rest = pop_prefix("and replace it with ", rest)  # ty:ignore[not-iterable]
+            word, rest = pop_word(rest)
+            assert rest == "."
 
         else:
             raise ValueError(f"{rest=}")
