@@ -1,4 +1,3 @@
-import collections
 import re
 
 import decrypter
@@ -166,10 +165,16 @@ for instruction in instructions:
                 position_before, before, rest = pop_positional_word(rest)
                 assert rest == "."
 
+                i = [i for i, v in enumerate(words) if v == before][position_before]
+                words.insert(i, to_insert)
+
             elif match := pop_prefix("after ", rest):
                 rest = match[1]
                 position_after, after, rest = pop_positional_word(rest)
                 assert rest == "."
+
+                i = [i for i, v in enumerate(words) if v == after][position_after]
+                words.insert(i + 1, to_insert)
 
             elif match := pop_prefix("between ", rest):
                 rest = match[1]
@@ -177,6 +182,12 @@ for instruction in instructions:
                 _, rest = pop_prefix("and ", rest)  # ty:ignore[not-iterable]
                 position_after, after, rest = pop_positional_word(rest)
                 assert rest == "."
+
+                i = [i for i, v in enumerate(words) if v == before][position_before]
+                j = [i for i, v in enumerate(words) if v == after][position_after]
+                assert i + 1 == j
+                words.insert(j, to_insert)
+
             else:
                 raise ValueError(f"{rest=}")
 
@@ -187,8 +198,20 @@ for instruction in instructions:
             word, rest = pop_word(rest)
             assert rest == "."
 
+            i = [i for i, v in enumerate(words) if v == word_del][position_del]
+            words[i] = word
+
         else:
             raise ValueError(f"{rest=}")
-    except (AssertionError, TypeError, ValueError) as e:
+    except (AssertionError, IndexError, TypeError, ValueError) as e:
         print(f"Cannot parse {instruction=}\n{e}")
         break
+
+# Quotes will still have incorrect spacing
+words_combined = " ".join(words)
+for punctuation in ',:.\n?-";)(!':
+    words_combined = words_combined.replace(f" {punctuation}", punctuation)
+
+
+with open("data/88a.txt", "w") as f:
+    f.write(words_combined)
