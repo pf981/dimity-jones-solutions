@@ -1,11 +1,10 @@
+# This solves "Letter To Your Stupid, Callous, Frustrating, Depressing
+# Depressed Husband" using the instructions in chapter 88. This does not have
+# a corresponding hash. This letter does not provide any clues to solve the
+# 89th hash (as confirmed by the author).
 import re
 
 import decrypter
-
-text = decrypter.decrypter(89, False)(lambda x: x).decrypt_chapter()
-instructions = text.split("\n\n")[15:-12]  # Trim off introduction and "Stop writing."
-
-words = ["fuck", "you"]
 
 
 def pop_prefix(regex: str, s: str) -> tuple[str, str] | None:
@@ -137,7 +136,7 @@ ordinals = ordinal_words_upto(600)
 
 def pop_position(s: str) -> tuple[int, str]:
     for i, prefix in enumerate(ordinals):
-        if match := pop_prefix(f"the {prefix}", rest):
+        if match := pop_prefix(f"the {prefix}", s):
             return i, match[1]
     raise ValueError(f"Cannot pop position {s=}")
 
@@ -153,65 +152,78 @@ def pop_positional_word(s: str) -> tuple[int, str, str]:
     return position, word, rest
 
 
-for instruction in instructions:
-    try:
-        rest = instruction
-        if match := pop_prefix("Write ", rest):
-            rest = match[1]
-            to_insert, rest = pop_word(rest)
+def construct_text(text: str) -> str:
+    instructions = text.split("\n\n")[
+        15:-12
+    ]  # Trim off introduction and "Stop writing."
 
-            if match := pop_prefix("before ", rest):
+    words = ["fuck", "you"]
+
+    for instruction in instructions:
+        try:
+            rest = instruction
+            if match := pop_prefix("Write ", rest):
                 rest = match[1]
-                position_before, before, rest = pop_positional_word(rest)
+                to_insert, rest = pop_word(rest)
+
+                if match := pop_prefix("before ", rest):
+                    rest = match[1]
+                    position_before, before, rest = pop_positional_word(rest)
+                    assert rest == "."
+
+                    i = [i for i, v in enumerate(words) if v == before][position_before]
+                    words.insert(i, to_insert)
+
+                elif match := pop_prefix("after ", rest):
+                    rest = match[1]
+                    position_after, after, rest = pop_positional_word(rest)
+                    assert rest == "."
+
+                    i = [i for i, v in enumerate(words) if v == after][position_after]
+                    words.insert(i + 1, to_insert)
+
+                elif match := pop_prefix("between ", rest):
+                    rest = match[1]
+                    position_before, before, rest = pop_positional_word(rest)
+                    _, rest = pop_prefix("and ", rest)  # ty:ignore[not-iterable]
+                    position_after, after, rest = pop_positional_word(rest)
+                    assert rest == "."
+
+                    i = [i for i, v in enumerate(words) if v == before][position_before]
+                    j = [i for i, v in enumerate(words) if v == after][position_after]
+                    assert i + 1 == j
+                    words.insert(j, to_insert)
+
+                else:
+                    raise ValueError(f"{rest=}")
+
+            elif match := pop_prefix("On second thought, delete ", rest):
+                rest = match[1]
+                position_del, word_del, rest = pop_positional_word(rest)
+                _, rest = pop_prefix("and replace it with ", rest)  # ty:ignore[not-iterable]
+                word, rest = pop_word(rest)
                 assert rest == "."
 
-                i = [i for i, v in enumerate(words) if v == before][position_before]
-                words.insert(i, to_insert)
-
-            elif match := pop_prefix("after ", rest):
-                rest = match[1]
-                position_after, after, rest = pop_positional_word(rest)
-                assert rest == "."
-
-                i = [i for i, v in enumerate(words) if v == after][position_after]
-                words.insert(i + 1, to_insert)
-
-            elif match := pop_prefix("between ", rest):
-                rest = match[1]
-                position_before, before, rest = pop_positional_word(rest)
-                _, rest = pop_prefix("and ", rest)  # ty:ignore[not-iterable]
-                position_after, after, rest = pop_positional_word(rest)
-                assert rest == "."
-
-                i = [i for i, v in enumerate(words) if v == before][position_before]
-                j = [i for i, v in enumerate(words) if v == after][position_after]
-                assert i + 1 == j
-                words.insert(j, to_insert)
+                i = [i for i, v in enumerate(words) if v == word_del][position_del]
+                words[i] = word
 
             else:
                 raise ValueError(f"{rest=}")
+        except (AssertionError, IndexError, TypeError, ValueError) as e:
+            print(f"Cannot parse {instruction=}\n{e}")
+            break
 
-        elif match := pop_prefix("On second thought, delete ", rest):
-            rest = match[1]
-            position_del, word_del, rest = pop_positional_word(rest)
-            _, rest = pop_prefix("and replace it with ", rest)  # ty:ignore[not-iterable]
-            word, rest = pop_word(rest)
-            assert rest == "."
+    # Quotes will still have incorrect spacing
+    words_combined = " ".join(words)
+    for punctuation in ',:.\n?-";)(!':
+        words_combined = words_combined.replace(f" {punctuation}", punctuation)
 
-            i = [i for i, v in enumerate(words) if v == word_del][position_del]
-            words[i] = word
-
-        else:
-            raise ValueError(f"{rest=}")
-    except (AssertionError, IndexError, TypeError, ValueError) as e:
-        print(f"Cannot parse {instruction=}\n{e}")
-        break
-
-# Quotes will still have incorrect spacing
-words_combined = " ".join(words)
-for punctuation in ',:.\n?-";)(!':
-    words_combined = words_combined.replace(f" {punctuation}", punctuation)
+    return words_combined
 
 
-with open("data/88a.txt", "w") as f:
-    f.write(words_combined)
+@decrypter.decrypter(chapter=90, has_chapter_separator=False)
+def decrypt(cipher: str) -> str:
+    return construct_text(cipher)
+
+
+decrypt.input_file = "88.txt"

@@ -1,6 +1,7 @@
 import hashlib
 import importlib
 import os
+
 import pytest
 
 
@@ -105,6 +106,7 @@ hashes = [
     "e255ad75bdfc339006a2de02996c3a403a49518589b8cb8529075f5cb6cb70a0",
     "9d25b68a462017909c4b9f040c2efa803525e64cf373643b22fa096653306f36",
     "9920b2704b4cb554b2cb9be1b939d8d2aa1d64ce8784c7d2176585201f4f5663",
+    "7168ac02f0ee6a633333ceb9c746d8f477e88fdd10551e2f75d06e1cd7f5d75d",  # Solution to puzzle in chapter 88, which does not have a provided hash
 ]
 
 
